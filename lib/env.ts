@@ -23,6 +23,27 @@ export function isLocalDataMode(): boolean {
   return !isSupabaseConfigured();
 }
 
+export function getAppUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+
+  if (configured && !configured.includes("localhost")) {
+    return configured;
+  }
+
+  const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(/\/$/, "");
+  if (productionUrl) {
+    return productionUrl.startsWith("http")
+      ? productionUrl
+      : `https://${productionUrl}`;
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return configured ?? "http://localhost:3000";
+}
+
 export type ServiceStatus = {
   supabase: boolean;
   resend: boolean;
@@ -35,6 +56,6 @@ export function getServiceStatus(): ServiceStatus {
     supabase: isSupabaseConfigured(),
     resend: isResendConfigured(),
     localData: isLocalDataMode(),
-    appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+    appUrl: getAppUrl(),
   };
 }

@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { isResendConfigured } from "@/lib/env";
+import { getAppUrl, isResendConfigured } from "@/lib/env";
 
 let resendClient: Resend | null = null;
 
@@ -15,7 +15,10 @@ export function getResend(): Resend {
   return resendClient;
 }
 
-export async function sendWelcomeEmail(email: string): Promise<"sent" | "skipped"> {
+export async function sendWelcomeEmail(
+  email: string,
+  appUrlOverride?: string
+): Promise<"sent" | "skipped"> {
   if (!isResendConfigured()) {
     console.info(`[KARTA] Resend not configured — welcome email skipped for ${email}`);
     return "skipped";
@@ -23,7 +26,7 @@ export async function sendWelcomeEmail(email: string): Promise<"sent" | "skipped
 
   const resend = getResend();
   const from = process.env.RESEND_FROM_EMAIL ?? "KARTA <onboarding@resend.dev>";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const appUrl = (appUrlOverride ?? getAppUrl()).replace(/\/$/, "");
 
   await resend.emails.send({
     from,

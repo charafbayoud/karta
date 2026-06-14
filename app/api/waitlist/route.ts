@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAppUrl } from "@/lib/env";
 import { addToWaitlist } from "@/lib/waitlist";
 import { sendWelcomeEmail } from "@/lib/resend";
+
+function getOriginFromRequest(request: NextRequest): string {
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const host = forwardedHost ?? request.headers.get("host");
+  const proto = request.headers.get("x-forwarded-proto") ?? "https";
+
+  if (host) {
+    return `${proto}://${host.split(",")[0].trim()}`.replace(/\/$/, "");
+  }
+
+  return getAppUrl();
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      await sendWelcomeEmail(email);
+      await sendWelcomeEmail(email, getOriginFromRequest(request));
     } catch (emailError) {
       console.error("Welcome email failed:", emailError);
     }
