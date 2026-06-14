@@ -1,0 +1,8 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- KARTA — Installation Supabase
+--
+-- ÉTAPE 1 → exécute  01-tables.sql   (crée les tables)
+-- ÉTAPE 2 → exécute  02-routes.sql   (insère 123 circuits)
+--
+-- ⚠️  Un seul fichier à la fois : Cmd+A → Copier → Coller dans SQL Editor → Run
+-- ═══════════════════════════════════════════════════════════════════════════
