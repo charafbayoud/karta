@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
 import { Trust } from "@/components/landing/Trust";
@@ -17,7 +18,12 @@ export default function LandingPage() {
       <ComingSoon />
       <FinalCTA />
       <footer className="landing-footer">
-        <p>© {new Date().getFullYear()} KARTA · Built for Zwift riders.</p>
+        <p>
+          © {new Date().getFullYear()} KARTA · Built for Zwift riders. ·{" "}
+          <Link href="/app" className="landing-dev-link">
+            Open App
+          </Link>
+        </p>
       </footer>
     </main>
   );
