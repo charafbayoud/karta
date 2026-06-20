@@ -9,7 +9,11 @@ export async function fetchRoutes(): Promise<{ routes: Route[]; source: "supabas
   }
 
   const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("routes").select("*");
+  let { data, error } = await supabase.from("zwift_routes").select("*");
+
+  if (error?.code === "42P01") {
+    ({ data, error } = await supabase.from("routes").select("*"));
+  }
 
   if (error) throw error;
 

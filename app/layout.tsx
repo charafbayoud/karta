@@ -16,9 +16,9 @@ const courier = Courier_Prime({
 });
 
 export const metadata: Metadata = {
-  title: "KARTA — Zwift Route Recommendations",
+  title: "KARTA — Indoor & Outdoor Cycling Platform",
   description:
-    "KARTA finds the perfect Zwift route for your next ride based on your available time, experience level and training goal.",
+    "KARTA helps cyclists ride smarter — Zwift route recommendations, GPS Art, and outdoor route generation at karta.club.",
 };
 
 export default function RootLayout({
