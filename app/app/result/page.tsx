@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ResultCard } from "@/components/app/ResultCard";
+import type { RouteCircuitSchema } from "@/lib/route-circuit-schema";
 import type {
   AvailableTime,
   RecommendationResult,
@@ -12,6 +12,8 @@ import type {
 } from "@/types/route";
 
 interface StoredResult extends RecommendationResult {
+  circuitSchema?: RouteCircuitSchema;
+  circuitSeed?: number;
   request: {
     availableTime: AvailableTime;
     riderLevel: RiderLevel;
@@ -38,33 +40,24 @@ export default function ResultPage() {
   }, [router]);
 
   if (!data) {
-    return (
-      <main className="app-shell flex min-h-screen items-center justify-center">
-        <p className="text-muted">Loading your route…</p>
-      </main>
-    );
+    return <p className="text-muted">Loading your route…</p>;
   }
 
   return (
-    <main className="app-shell">
-      <header className="landing-header">
-        <div className="landing-header-inner">
-          <Link href="/" className="landing-logo">
-            KARTA
-          </Link>
-          <span className="text-sm text-muted">
-            Your Route
-          </span>
-        </div>
+    <>
+      <header className="dashboard-header">
+        <p className="karta-label">Ride Indoor</p>
+        <h1>Your Route</h1>
       </header>
-
-      <div className="result-page-container">
+      <div className="result-page-container result-page-container--embedded">
         <ResultCard
           result={data}
           trainingGoal={data.request.trainingGoal}
           availableTime={data.request.availableTime}
+          circuitSchema={data.circuitSchema}
+          circuitSeed={data.circuitSeed}
         />
       </div>
-    </main>
+    </>
   );
 }

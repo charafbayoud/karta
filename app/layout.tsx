@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Courier_Prime } from "next/font/google";
+import { Courier_Prime, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -18,7 +24,7 @@ const courier = Courier_Prime({
 export const metadata: Metadata = {
   title: "KARTA — Indoor & Outdoor Cycling Platform",
   description:
-    "KARTA helps cyclists ride smarter — Zwift route recommendations, GPS Art, and outdoor route generation at karta.club.",
+    "KARTA helps cyclists ride smarter — Zwift route recommendations and outdoor loop generation at karta.club.",
 };
 
 export default function RootLayout({
@@ -27,8 +33,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${courier.variable}`} style={{ ["--font-helvetica" as string]: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${inter.variable} ${playfair.variable} ${courier.variable}`}
+      suppressHydrationWarning
+    >
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

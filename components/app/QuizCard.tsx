@@ -18,11 +18,11 @@ export function QuizCard({ label, selected, onSelect, icon }: QuizCardProps) {
       <span className="quiz-card-indicator" aria-hidden="true">
         {selected ? (
           <svg width="14" height="14" viewBox="0 0 14 14">
-            <circle cx="7" cy="7" r="7" fill="var(--accent)" />
+            <circle cx="7" cy="7" r="7" fill="var(--brand)" />
             <path
               d="M4 7 L6 9 L10 5"
               fill="none"
-              stroke="white"
+              stroke="#141414"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"

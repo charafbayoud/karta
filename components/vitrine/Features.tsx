@@ -1,33 +1,35 @@
 const FEATURES = [
   {
-    title: "Indoor",
+    title: "Indoor intelligence",
     items: [
-      "Instant Zwift route recommendation",
-      "Matched to your time and level",
-      "Recovery, endurance, climbing, challenge",
-      "Export GPX for Zwift",
+      "Instant Zwift route match",
+      "Time, level, and goal aware",
+      "120+ curated world routes",
+      "Estimated duration per level",
     ],
   },
   {
-    title: "Outdoor",
+    title: "Outdoor precision",
     items: [
-      "GPS Art with letters A–Z and emojis",
-      "Smart loop generator",
-      "Strava segment integration",
-      "GPX export for Garmin and Wahoo",
+      "Strava segment-powered loops",
+      "Road-routed GPX (not straight lines)",
+      "Multiple alternatives per generation",
+      "Distance matched to your target",
     ],
   },
 ];
 
 export function Features() {
   return (
-    <section className="v2-section v2-section-muted">
+    <section className="v2-section">
       <div className="v2-section-inner">
-        <p className="karta-label">Features</p>
-        <h2>Built for every ride</h2>
+        <div className="section-head section-head--wide">
+          <p className="karta-label">Features</p>
+          <h2>Everything you need. Nothing you don&apos;t.</h2>
+        </div>
         <div className="v2-features-grid">
           {FEATURES.map((group) => (
-            <article key={group.title} className="v2-features-card">
+            <article key={group.title} className="v2-features-card mk-feature-card">
               <h3>{group.title}</h3>
               <ul>
                 {group.items.map((item) => (

@@ -23,6 +23,39 @@ export function isLocalDataMode(): boolean {
   return !isSupabaseConfigured();
 }
 
+/** Local QA only — skip login on /outdoor, /dashboard, etc. Never enable in production. */
+export function isDevAuthBypass(): boolean {
+  return (
+    process.env.NODE_ENV === "development" &&
+    process.env.KARTA_DEV_BYPASS_AUTH === "true"
+  );
+}
+
+export function isGoogleMapsConfigured(): boolean {
+  const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  return Boolean(key && key.trim().length > 0);
+}
+
+export function isGoogleRoadsConfigured(): boolean {
+  const key =
+    process.env.GOOGLE_ROADS_API_KEY ??
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  return Boolean(key && key.trim().length > 0);
+}
+
+export function isGoogleRoutesConfigured(): boolean {
+  const key =
+    process.env.GOOGLE_ROUTES_API_KEY ??
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  return Boolean(key && key.trim().length > 0);
+}
+
+export function isStravaConfigured(): boolean {
+  const id = process.env.STRAVA_CLIENT_ID?.trim();
+  const secret = process.env.STRAVA_CLIENT_SECRET?.trim();
+  return Boolean(id && secret);
+}
+
 export function getAppUrl(): string {
   const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
 
@@ -48,6 +81,10 @@ export type ServiceStatus = {
   supabase: boolean;
   resend: boolean;
   localData: boolean;
+  googleMaps: boolean;
+  googleRoads: boolean;
+  googleRoutes: boolean;
+  strava: boolean;
   appUrl: string;
 };
 
@@ -56,6 +93,10 @@ export function getServiceStatus(): ServiceStatus {
     supabase: isSupabaseConfigured(),
     resend: isResendConfigured(),
     localData: isLocalDataMode(),
+    googleMaps: isGoogleMapsConfigured(),
+    googleRoads: isGoogleRoadsConfigured(),
+    googleRoutes: isGoogleRoutesConfigured(),
+    strava: isStravaConfigured(),
     appUrl: getAppUrl(),
   };
 }

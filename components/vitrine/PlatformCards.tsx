@@ -6,14 +6,14 @@ const CARDS = [
     title: "Ride Indoor",
     description:
       "Find your perfect Zwift route in 2 clicks. Time, level, goal — KARTA does the rest.",
-    href: "/indoor",
+    href: "/app",
     cta: "Start Indoor",
   },
   {
     icon: "🗺️",
     title: "Ride Outdoor",
     description:
-      "Generate real GPS routes or create GPS Art with your name, a word or an emoji.",
+      "Generate smart GPS loops from Strava segments near you.",
     href: "/outdoor",
     cta: "Start Outdoor",
   },

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { signInWithEmail, type AuthActionState } from "@/lib/auth/actions";
 import { GoogleAuthButton } from "./GoogleAuthButton";
+import { StravaAuthButton } from "./StravaAuthButton";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
   const [state, formAction, pending] = useActionState<AuthActionState, FormData>(
@@ -41,7 +42,8 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         <span>or</span>
       </div>
 
-      <GoogleAuthButton label="Continue with Google" />
+      <GoogleAuthButton label="Continue with Google" nextPath={nextPath} />
+      <StravaAuthButton mode="login" />
 
       <p className="auth-switch">
         No account yet? <Link href="/signup">Sign up</Link>

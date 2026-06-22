@@ -1,8 +1,34 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/layout/DashboardShell";
+import { SavedRoutesList } from "@/components/dashboard/SavedRoutesList";
 import { getCurrentProfile, getFirstName } from "@/lib/auth/profile";
+import { getSavedRoutes } from "@/lib/saved-routes/server";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+
+function ModeIcon({ type }: { type: "indoor" | "outdoor" }) {
+  if (type === "indoor") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true" className="dashboard-mode-icon">
+        <rect x="4" y="6" width="24" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M10 22v4M22 22v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true" className="dashboard-mode-icon">
+      <path
+        d="M6 22 Q 12 10, 18 16 T 26 8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <circle cx="6" cy="22" r="2" fill="currentColor" />
+    </svg>
+  );
+}
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -20,46 +46,39 @@ export default async function DashboardPage() {
   }
 
   const firstName = getFirstName(profile, user.email);
+  const recentRoutes = await getSavedRoutes(5);
 
   return (
     <DashboardShell activePath="/dashboard">
       <div className="dashboard-content">
-        <header className="dashboard-header">
+        <header className="section-head">
           <p className="karta-label">Dashboard</p>
           <h1>Welcome back, {firstName}</h1>
-          <p className="dashboard-sub">Ready for your next ride?</p>
+          <p className="dashboard-sub">Pick a mode — we&apos;ll handle the route.</p>
         </header>
 
         <section className="dashboard-quick-grid">
-          <Link href="/indoor" className="dashboard-quick-card">
-            <span aria-hidden>🖥️</span>
+          <Link href="/app" className="dashboard-quick-card dashboard-quick-card--premium">
+            <ModeIcon type="indoor" />
             <h2>Ride Indoor</h2>
-            <p>Find your perfect Zwift route in a few clicks.</p>
+            <p>Matched Zwift route in three taps.</p>
+            <span className="dashboard-card-link">Start quiz →</span>
           </Link>
-          <Link href="/outdoor" className="dashboard-quick-card">
-            <span aria-hidden>🗺️</span>
+          <Link href="/outdoor" className="dashboard-quick-card dashboard-quick-card--premium">
+            <ModeIcon type="outdoor" />
             <h2>Ride Outdoor</h2>
-            <p>GPS Art and smart outdoor route generation.</p>
+            <p>Strava loops on real roads, GPX ready.</p>
+            <span className="dashboard-card-link">Generate loop →</span>
           </Link>
         </section>
 
-        {!profile.strava_connected && (
-          <section className="dashboard-banner">
-            <div>
-              <h2>Connect Strava</h2>
-              <p>Unlock popular routes in your area — coming in a later phase.</p>
-            </div>
-            <button type="button" className="btn-secondary" disabled>
-              Connect Strava
-            </button>
-          </section>
-        )}
-
         <section className="dashboard-panel">
           <h2>Recent routes</h2>
-          <p className="dashboard-empty">
-            No saved routes yet. Complete a ride to see it here.
-          </p>
+          <SavedRoutesList
+            routes={recentRoutes}
+            emptyMessage="No saved routes yet. Generate a loop or complete a quiz, then tap Save Route."
+            showViewAllLink={recentRoutes.length > 0}
+          />
         </section>
       </div>
     </DashboardShell>

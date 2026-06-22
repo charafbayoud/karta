@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUpWithEmail, type AuthActionState } from "@/lib/auth/actions";
 import { GoogleAuthButton } from "./GoogleAuthButton";
+import { StravaAuthButton } from "./StravaAuthButton";
 import type { PrimaryExperience, PrimarySport } from "@/types/user";
 import {
   PRIMARY_EXPERIENCE_LABELS,
@@ -26,7 +27,7 @@ export function SignupForm() {
     <div className="auth-card">
       <p className="karta-label">Join KARTA</p>
       <h1>Sign Up</h1>
-      <p className="auth-sub">Step {step} of 3</p>
+      <p className="auth-sub">Étape {step} sur 3</p>
 
       <form action={formAction} className="auth-form">
         <input type="hidden" name="primary_sport" value={sport} />
@@ -59,6 +60,7 @@ export function SignupForm() {
               <span>or</span>
             </div>
             <GoogleAuthButton label="Sign up with Google" />
+            <StravaAuthButton mode="signup" />
           </>
         )}
 

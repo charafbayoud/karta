@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { QuizSidebar } from "./QuizSidebar";
 import { QuizCard } from "./QuizCard";
 import { LoadingAnimation } from "./LoadingAnimation";
 import {
@@ -20,6 +19,7 @@ import type {
   RiderLevel,
   TrainingGoal,
 } from "@/types/route";
+import { buildUniqueRouteCircuitSchema } from "@/lib/route-circuit-schema";
 import {
   AVAILABLE_TIME_OPTIONS,
   RIDER_LEVEL_LABELS,
@@ -106,11 +106,14 @@ export function StepOne() {
       }
 
       const result = data as RecommendationResult;
+      const circuitSchema = buildUniqueRouteCircuitSchema(result.route);
 
       sessionStorage.setItem(
         "karta-result",
         JSON.stringify({
           ...result,
+          circuitSeed: circuitSchema.seed,
+          circuitSchema,
           request: { availableTime, riderLevel, trainingGoal },
         })
       );
@@ -142,7 +145,6 @@ export function StepOne() {
   if (phase === "loading") {
     return (
       <div className="quiz-layout">
-        <QuizSidebar currentStep={3} completedThrough={3} />
         <div className="quiz-main quiz-main-loading">
           <LoadingAnimation />
         </div>
@@ -155,8 +157,6 @@ export function StepOne() {
 
   return (
     <div className="quiz-layout">
-      <QuizSidebar currentStep={quizStep} />
-
       <div className="quiz-main">
         <div className="quiz-content">
           <p className="quiz-eyebrow">{content.eyebrow}</p>

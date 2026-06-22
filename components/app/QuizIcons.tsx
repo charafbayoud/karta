@@ -1,3 +1,11 @@
+import {
+  IconPictogramCatCow,
+  IconPictogramDownDog,
+  IconPictogramForwardBend,
+  IconPictogramHeadstand,
+  IconPictogramTriangle,
+} from "@/components/shared/PictogramIcons";
+
 export function IconTime({ minutes }: { minutes: number }) {
   const angle = Math.min(360, (minutes / 120) * 360);
   return (
@@ -44,73 +52,21 @@ export function IconLevel({ bars }: { bars: number }) {
 }
 
 export function IconRecovery() {
-  return (
-    <svg viewBox="0 0 48 48" className="quiz-icon-svg" aria-hidden="true">
-      <path
-        d="M24 38 C16 30, 12 24, 12 18 C12 13, 16 10, 20 10 C22 10, 24 11, 24 13 C24 11, 26 10, 28 10 C32 10, 36 13, 36 18 C36 24, 32 30, 24 38 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <IconPictogramForwardBend />;
 }
 
 export function IconEndurance() {
-  return (
-    <svg viewBox="0 0 48 48" className="quiz-icon-svg" aria-hidden="true">
-      <path
-        d="M8 32 Q20 22, 32 28 T 44 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <circle cx="8" cy="32" r="3" fill="currentColor" />
-    </svg>
-  );
+  return <IconPictogramDownDog />;
 }
 
 export function IconClimbing() {
-  return (
-    <svg viewBox="0 0 48 48" className="quiz-icon-svg" aria-hidden="true">
-      <path
-        d="M8 38 L20 14 L28 26 L40 8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M36 8 L40 8 L40 12" fill="none" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
+  return <IconPictogramTriangle />;
 }
 
 export function IconChallenge() {
-  return (
-    <svg viewBox="0 0 48 48" className="quiz-icon-svg" aria-hidden="true">
-      <path
-        d="M24 8 L28 20 L40 20 L30 28 L34 40 L24 32 L14 40 L18 28 L8 20 L20 20 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <IconPictogramHeadstand />;
 }
 
 export function IconSurprise() {
-  return (
-    <svg viewBox="0 0 48 48" className="quiz-icon-svg" aria-hidden="true">
-      <rect x="10" y="10" width="28" height="28" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="18" cy="18" r="2" fill="currentColor" />
-      <circle cx="30" cy="18" r="2" fill="currentColor" />
-      <circle cx="24" cy="24" r="2" fill="currentColor" />
-      <circle cx="18" cy="30" r="2" fill="currentColor" />
-      <circle cx="30" cy="30" r="2" fill="currentColor" />
-    </svg>
-  );
+  return <IconPictogramCatCow />;
 }

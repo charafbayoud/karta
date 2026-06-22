@@ -9,7 +9,7 @@ export function Footer() {
           <p className="v2-footer-domain">karta.club</p>
         </div>
         <nav className="v2-footer-links" aria-label="Footer">
-          <Link href="/indoor">Indoor</Link>
+          <Link href="/app">Indoor</Link>
           <Link href="/outdoor">Outdoor</Link>
           <Link href="/login">Login</Link>
           <Link href="/signup">Sign Up</Link>

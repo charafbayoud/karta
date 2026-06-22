@@ -2,6 +2,28 @@ export type PrimarySport = "cycling" | "running" | "walking";
 export type PrimaryExperience = "indoor" | "outdoor" | "both";
 export type SavedRouteType = "indoor" | "outdoor" | "gps-art";
 
+export interface SavedRoute {
+  id: string;
+  user_id: string;
+  route_name: string;
+  type: SavedRouteType;
+  sport: PrimarySport | null;
+  distance_km: number | null;
+  elevation_m: number | null;
+  duration_min: number | null;
+  gpx_data: string | null;
+  map_preview_url: string | null;
+  shape_type: string | null;
+  zwift_world: string | null;
+  created_at: string;
+}
+
+export const SAVED_ROUTE_TYPE_LABELS: Record<SavedRouteType, string> = {
+  indoor: "Ride Indoor",
+  outdoor: "Route Generator",
+  "gps-art": "GPS Art",
+};
+
 export interface Profile {
   id: string;
   email: string | null;

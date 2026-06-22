@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="360" viewBox="0 0 560 360" fill="none">
+  <rect width="560" height="360" rx="16" fill="#F7F6F2"/>
+  <rect x="1" y="1" width="558" height="358" rx="15" stroke="#D5D0C6"/>
+  <rect x="24" y="24" width="512" height="48" rx="10" fill="#EFEDE6"/>
+  <text x="40" y="54" font-family="Georgia, serif" font-size="14" fill="#141413">KARTA - Ride Indoor</text>
+  <text x="420" y="54" font-family="Courier, monospace" font-size="11" fill="#6A9B82">STEP 2 / 3</text>
+  <rect x="24" y="92" width="512" height="244" rx="12" fill="#FFFFFF" stroke="#D5D0C6"/>
+  <text x="48" y="128" font-family="Helvetica, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#6A9B82">AVAILABLE TIME</text>
+  <rect x="48" y="144" width="88" height="40" rx="8" fill="#B85626"/>
+  <text x="68" y="169" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#FFFAF6">45 min</text>
+  <rect x="144" y="144" width="88" height="40" rx="8" fill="#EFEDE6" stroke="#D5D0C6"/>
+  <text x="164" y="169" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#2A2926">60 min</text>
+  <rect x="240" y="144" width="88" height="40" rx="8" fill="#EFEDE6" stroke="#D5D0C6"/>
+  <text x="260" y="169" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#2A2926">90 min</text>
+  <text x="48" y="220" font-family="Helvetica, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#6A9B82">RECOMMENDED</text>
+  <rect x="48" y="236" width="464" height="72" rx="10" fill="#E8E5DD" stroke="#6A9B82"/>
+  <text x="64" y="264" font-family="Georgia, serif" font-size="16" fill="#141413">France Douce France</text>
+  <text x="64" y="288" font-family="Courier, monospace" font-size="12" fill="#6F6C65">23 km | ~55 min | Endurance</text>
+  <rect x="400" y="252" width="96" height="36" rx="8" fill="#B85626"/>
+  <text x="418" y="275" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#FFFAF6">View route</text>
+</svg>

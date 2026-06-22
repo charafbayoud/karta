@@ -16,10 +16,18 @@ export async function Navbar() {
         </Link>
 
         <nav className="v2-nav-links" aria-label="Main">
+          {!user && (
+            <>
+              <Link href="/#preview">Routes</Link>
+              <Link href="/#spotlight">Product</Link>
+              <Link href="/#destinations">Destinations</Link>
+            </>
+          )}
           {user ? (
             <>
               <Link href="/dashboard">Dashboard</Link>
-              <Link href="/dashboard">Profile</Link>
+              <Link href="/app">Indoor</Link>
+              <Link href="/outdoor">Outdoor</Link>
               <form action={signOut}>
                 <button type="submit" className="v2-nav-button">
                   Logout
@@ -30,7 +38,7 @@ export async function Navbar() {
             <>
               <Link href="/login">Login</Link>
               <Link href="/signup" className="btn-primary v2-nav-cta">
-                Sign Up
+                Sign up
               </Link>
             </>
           )}
