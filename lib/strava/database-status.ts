@@ -1,40 +1,26 @@
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { isStravaConfigured } from "@/lib/env";
-import { validateSupabaseEnvForServer } from "@/lib/supabase/env";
+import {
+  isLikelySupabaseJwt,
+  readSupabaseServiceRoleKey,
+  validateSupabaseEnvForServer,
+} from "@/lib/supabase/env";
 
 const SUPABASE_SQL_EDITOR_URL =
   "https://supabase.com/dashboard/project/wbgztmysocsxdaysbrsp/sql/new";
 
-export { SUPABASE_SQL_EDITOR_URL };
+const SUPABASE_API_URL =
+  "https://supabase.com/dashboard/project/wbgztmysocsxdaysbrsp/settings/api";
 
-function formatCaughtError(error: unknown): string {
-  const message = error instanceof Error ? error.message : String(error);
+export { SUPABASE_SQL_EDITOR_URL, SUPABASE_API_URL };
 
-  if (message.includes("ByteString") || message.includes("8594")) {
-    return (
-      "Cle Supabase invalide sur Vercel (caractere special detecte, souvent une fleche). " +
-      "Ouvre Vercel, Environment Variables, et recopie uniquement les cles eyJ... depuis Supabase, API."
-    );
-  }
-
-  if (message.includes("<!DOCTYPE html") || message.includes("<html")) {
-    return (
-      "Connexion Supabase incorrecte. Verifie NEXT_PUBLIC_SUPABASE_URL " +
-      "(https://wbgztmysocsxdaysbrsp.supabase.co) sur Vercel."
-    );
-  }
-
-  if (message.length > 240) {
-    return `${message.slice(0, 240)}…`;
-  }
-
-  return message;
-}
+export type StravaDatabaseIssue = "env" | "sql" | "strava" | null;
 
 export async function getStravaDatabaseStatus(): Promise<{
   ready: boolean;
   configured: boolean;
   hint: string | null;
+  issue: StravaDatabaseIssue;
 }> {
   const configured = isStravaConfigured();
 
@@ -42,7 +28,19 @@ export async function getStravaDatabaseStatus(): Promise<{
     return {
       ready: false,
       configured: false,
-      hint: "Ajoute STRAVA_CLIENT_ID et STRAVA_CLIENT_SECRET dans .env.local",
+      hint: "Ajoute STRAVA_CLIENT_ID et STRAVA_CLIENT_SECRET sur Vercel.",
+      issue: "strava",
+    };
+  }
+
+  const serviceRoleKey = readSupabaseServiceRoleKey();
+  if (serviceRoleKey && !isLikelySupabaseJwt(serviceRoleKey)) {
+    return {
+      ready: false,
+      configured: true,
+      hint:
+        "SUPABASE_SERVICE_ROLE_KEY est invalide sur Vercel. Recopie la cle service_role (eyJ...) depuis Supabase, API.",
+      issue: "env",
     };
   }
 
@@ -52,6 +50,7 @@ export async function getStravaDatabaseStatus(): Promise<{
       ready: false,
       configured: true,
       hint: envIssue.message,
+      issue: "env",
     };
   }
 
@@ -63,7 +62,18 @@ export async function getStravaDatabaseStatus(): Promise<{
       return {
         ready: false,
         configured: true,
-        hint: "La table profiles n'existe pas encore. Ouvre /setup/strava-sql, copie le SQL, execute-le dans Supabase.",
+        hint: "La table profiles n'existe pas encore dans Supabase.",
+        issue: "sql",
+      };
+    }
+
+    if (error?.message?.includes("Invalid API key")) {
+      return {
+        ready: false,
+        configured: true,
+        hint:
+          "Cle Supabase invalide sur Vercel. Recopie SUPABASE_SERVICE_ROLE_KEY depuis Supabase, API, onglet service_role.",
+        issue: "env",
       };
     }
 
@@ -71,16 +81,22 @@ export async function getStravaDatabaseStatus(): Promise<{
       return {
         ready: false,
         configured: true,
-        hint: `Erreur Supabase (${error.code ?? "unknown"}) : ${error.message}`,
+        hint: `Erreur Supabase : ${error.message}`,
+        issue: "env",
       };
     }
 
-    return { ready: true, configured: true, hint: null };
+    return { ready: true, configured: true, hint: null, issue: null };
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+
     return {
       ready: false,
       configured: true,
-      hint: formatCaughtError(error),
+      hint: message.includes("Invalid API key")
+        ? "Cle Supabase invalide sur Vercel. Recopie SUPABASE_SERVICE_ROLE_KEY (eyJ...) depuis Supabase, API."
+        : message,
+      issue: "env",
     };
   }
 }

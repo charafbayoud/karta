@@ -3,6 +3,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { StravaSetupBanner } from "@/components/auth/StravaSetupBanner";
 import { stravaErrorMessage } from "@/lib/strava/errors";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function LoginPage({
   searchParams,
@@ -12,6 +14,16 @@ export default async function LoginPage({
   const params = await searchParams;
   const rawNext = params.next ?? "/dashboard";
   const nextPath = rawNext.startsWith("/") ? decodeURIComponent(rawNext) : "/dashboard";
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect(nextPath);
+  }
+
   const stravaHint =
     params.reason === "strava" || params.strava === "login_required"
       ? "Connecte-toi à KARTA — tu seras ensuite redirigé vers Strava."

@@ -1,7 +1,8 @@
-import { cookies } from "next/headers";
+import type { NextRequest, NextResponse } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { upsertProfile } from "@/lib/auth/profile";
+import { readSupabaseAnonKey, readSupabaseUrl } from "@/lib/supabase/env";
 import type { StravaTokenResponse } from "@/lib/strava/oauth";
 import { saveStravaTokens } from "@/lib/strava/tokens";
 
@@ -28,7 +29,11 @@ async function findProfileByAthleteId(athleteId: number) {
   return data;
 }
 
-async function establishSession(email: string): Promise<void> {
+export async function establishSessionOnResponse(
+  request: NextRequest,
+  response: NextResponse,
+  email: string
+): Promise<void> {
   const admin = getSupabaseAdmin();
   const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
     type: "magiclink",
@@ -39,18 +44,21 @@ async function establishSession(email: string): Promise<void> {
     throw linkError ?? new Error("Unable to create KARTA session.");
   }
 
-  const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const url = readSupabaseUrl();
+  const key = readSupabaseAnonKey();
+
+  if (!url || !key) {
+    throw new Error("Missing Supabase environment variables.");
+  }
 
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() {
-        return cookieStore.getAll();
+        return request.cookies.getAll();
       },
       setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
+          response.cookies.set(name, value, options);
         });
       },
     },
@@ -58,7 +66,7 @@ async function establishSession(email: string): Promise<void> {
 
   const { error: verifyError } = await supabase.auth.verifyOtp({
     token_hash: linkData.properties.hashed_token,
-    type: "email",
+    type: "magiclink",
   });
 
   if (verifyError) throw verifyError;
@@ -67,7 +75,7 @@ async function establishSession(email: string): Promise<void> {
 export async function signInOrSignUpWithStrava(
   token: StravaTokenResponse,
   mode: "signup" | "login"
-): Promise<{ redirectTo: string; isNewUser: boolean }> {
+): Promise<{ redirectTo: string; email: string; isNewUser: boolean }> {
   const athleteId = token.athlete?.id;
   if (!athleteId) {
     throw new Error("Strava did not return an athlete profile.");
@@ -79,7 +87,7 @@ export async function signInOrSignUpWithStrava(
 
   if (!profile) {
     if (mode === "login") {
-      return { redirectTo: "/login?strava=no_account", isNewUser: false };
+      return { redirectTo: "/login?strava=no_account", email, isNewUser: false };
     }
 
     const admin = getSupabaseAdmin();
@@ -114,14 +122,14 @@ export async function signInOrSignUpWithStrava(
   }
 
   await saveStravaTokens(profile.id, token, athleteId);
-  await establishSession(email);
 
   if (!profile.primary_sport || !profile.primary_experience) {
-    return { redirectTo: "/signup/onboarding", isNewUser };
+    return { redirectTo: "/signup/onboarding", email, isNewUser };
   }
 
   return {
     redirectTo: isNewUser ? "/dashboard?strava=connected" : "/dashboard",
+    email,
     isNewUser,
   };
 }

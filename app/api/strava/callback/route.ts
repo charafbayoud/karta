@@ -1,6 +1,8 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import { signInOrSignUpWithStrava } from "@/lib/strava/account";
+import { type NextRequest, NextResponse } from "next/server";
+import {
+  establishSessionOnResponse,
+  signInOrSignUpWithStrava,
+} from "@/lib/strava/account";
 import { exchangeStravaCode } from "@/lib/strava/oauth";
 import { requireAuthenticatedUser } from "@/lib/strava/session";
 import {
@@ -18,7 +20,11 @@ function safeReturnPath(value: string | undefined): string {
   return "/dashboard";
 }
 
-function redirectWithMessage(request: Request, path: string, message?: string) {
+function redirectWithMessage(
+  request: NextRequest,
+  path: string,
+  message?: string
+): NextResponse {
   const url = new URL(path, request.url);
   if (message) url.searchParams.set("strava", message);
   const response = NextResponse.redirect(url);
@@ -26,13 +32,24 @@ function redirectWithMessage(request: Request, path: string, message?: string) {
   return response;
 }
 
-export async function GET(request: Request) {
-  const cookieStore = await cookies();
+async function finishStravaAuthRedirect(
+  request: NextRequest,
+  path: string,
+  email: string,
+  message?: string
+): Promise<NextResponse> {
+  const response = redirectWithMessage(request, path, message);
+  await establishSessionOnResponse(request, response, email);
+  return response;
+}
+
+export async function GET(request: NextRequest) {
+  const cookieStore = request.cookies;
   const { STATE_COOKIE, RETURN_COOKIE, FLOW_COOKIE } = getStravaOAuthCookieNames();
   const returnTo = safeReturnPath(cookieStore.get(RETURN_COOKIE)?.value);
   const flow = (cookieStore.get(FLOW_COOKIE)?.value ?? "connect") as StravaOAuthFlow;
 
-  const url = new URL(request.url);
+  const url = request.nextUrl;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const stravaError = url.searchParams.get("error");
@@ -53,10 +70,14 @@ export async function GET(request: Request) {
 
     if (flow === "signup") {
       const result = await signInOrSignUpWithStrava(token, "signup");
-      return redirectWithMessage(
+      if (result.redirectTo.includes("no_account")) {
+        return redirectWithMessage(request, result.redirectTo);
+      }
+      return finishStravaAuthRedirect(
         request,
         result.redirectTo,
-        result.isNewUser ? "connected" : "connected"
+        result.email,
+        "connected"
       );
     }
 
@@ -65,7 +86,12 @@ export async function GET(request: Request) {
       if (result.redirectTo.includes("no_account")) {
         return redirectWithMessage(request, result.redirectTo);
       }
-      return redirectWithMessage(request, result.redirectTo, "connected");
+      return finishStravaAuthRedirect(
+        request,
+        result.redirectTo,
+        result.email,
+        "connected"
+      );
     }
 
     const auth = await requireAuthenticatedUser();

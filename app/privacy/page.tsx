@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       <ul>
         <li>
           <strong>Account data</strong> — email address, name, and password when you create an
-          account. If you sign in with Google, we receive your profile information from that
+          account. If you sign in with Strava, we receive your athlete profile from that
           provider.
         </li>
         <li>
