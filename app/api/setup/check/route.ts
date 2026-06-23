@@ -5,8 +5,9 @@ import {
   readSupabaseServiceRoleKey,
   readSupabaseUrl,
   validateSupabaseEnvForServer,
+  validateSupabaseKeyRoles,
 } from "@/lib/supabase/env";
-import { isStravaConfigured } from "@/lib/env";
+import { getAppUrl, isStravaConfigured } from "@/lib/env";
 import { getStravaRedirectUri } from "@/lib/strava/config";
 
 /** Public diagnostic — no auth required. Helps debug Vercel env without reading secrets. */
@@ -14,7 +15,7 @@ export async function GET() {
   const url = readSupabaseUrl();
   const anonKey = readSupabaseAnonKey();
   const serviceRoleKey = readSupabaseServiceRoleKey();
-  const envIssue = validateSupabaseEnvForServer();
+  const envIssue = validateSupabaseEnvForServer() ?? validateSupabaseKeyRoles();
 
   let profilesTable: "ok" | "missing" | "error" | "skipped" = "skipped";
   let profilesError: string | undefined;
@@ -57,6 +58,7 @@ export async function GET() {
       configured: isStravaConfigured(),
       redirectUri: getStravaRedirectUri(),
     },
-    appUrl: process.env.NEXT_PUBLIC_APP_URL ?? null,
+    appUrl: getAppUrl(),
+    gitCommit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? null,
   });
 }

@@ -99,3 +99,55 @@ export function validateSupabaseEnvForServer(): SupabaseEnvIssue | null {
 export function isLikelySupabaseJwt(value: string): boolean {
   return value.startsWith("eyJ") && ASCII_ONLY.test(value);
 }
+
+function readJwtRole(value: string): string | null {
+  if (!isLikelySupabaseJwt(value)) return null;
+
+  try {
+    const payload = value.split(".")[1];
+    if (!payload) return null;
+    const padded = payload + "=".repeat((4 - (payload.length % 4)) % 4);
+    const json = JSON.parse(Buffer.from(padded, "base64url").toString("utf8")) as {
+      role?: string;
+    };
+    return json.role ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function validateSupabaseKeyRoles(): SupabaseEnvIssue | null {
+  const anonKey = readSupabaseAnonKey();
+  const serviceRoleKey = readSupabaseServiceRoleKey();
+
+  if (anonKey && serviceRoleKey && anonKey === serviceRoleKey) {
+    return {
+      field: "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      message:
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY est identique a SUPABASE_SERVICE_ROLE_KEY. " +
+        "Sur Vercel, anon = cle anon public, service_role = cle secrete serveur.",
+    };
+  }
+
+  const anonRole = anonKey ? readJwtRole(anonKey) : null;
+  if (anonRole && anonRole !== "anon") {
+    return {
+      field: "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      message:
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY n'est pas une cle anon (role JWT detecte: " +
+        anonRole +
+        "). Recopie la cle anon public depuis Supabase, API.",
+    };
+  }
+
+  const serviceRole = serviceRoleKey ? readJwtRole(serviceRoleKey) : null;
+  if (serviceRole && serviceRole !== "service_role") {
+    return {
+      field: "SUPABASE_SERVICE_ROLE_KEY",
+      message:
+        "SUPABASE_SERVICE_ROLE_KEY n'est pas une cle service_role. Recopie service_role depuis Supabase, API.",
+    };
+  }
+
+  return null;
+}
