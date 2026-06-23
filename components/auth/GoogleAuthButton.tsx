@@ -1,6 +1,6 @@
 "use client";
 
-import { signInWithGoogle } from "@/lib/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 
 export function GoogleAuthButton({
   label,
@@ -9,12 +9,26 @@ export function GoogleAuthButton({
   label: string;
   nextPath?: string;
 }) {
+  async function handleGoogleSignIn() {
+    const supabase = createClient();
+    const origin = window.location.origin;
+    const next = nextPath.startsWith("/") ? nextPath : "/dashboard";
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+
+    if (error) {
+      console.error("Google sign-in failed:", error.message);
+    }
+  }
+
   return (
-    <form action={signInWithGoogle}>
-      <input type="hidden" name="next" value={nextPath} />
-      <button type="submit" className="btn-secondary auth-oauth-btn">
-        {label}
-      </button>
-    </form>
+    <button type="button" className="btn-secondary auth-oauth-btn" onClick={handleGoogleSignIn}>
+      {label}
+    </button>
   );
 }

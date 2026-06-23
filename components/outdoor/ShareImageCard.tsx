@@ -4,7 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { GpsArtResult } from "@/types/gps-art";
 
 export function ShareImageCard({ result }: { result: GpsArtResult }) {
-  const shapeStrokes = result.shapeStrokes ?? (result.shapePoints ? [result.shapePoints] : []);
+  const shapeStrokes = useMemo(
+    () => result.shapeStrokes ?? (result.shapePoints ? [result.shapePoints] : []),
+    [result.shapePoints, result.shapeStrokes]
+  );
   const shapeKey = useMemo(
     () =>
       `${result.routeName}|${shapeStrokes.length}|${shapeStrokes[0]?.[0]?.lat ?? 0}|${shapeStrokes[0]?.[0]?.lng ?? 0}`,

@@ -195,8 +195,6 @@ function buildLollipopPath(
   rotation: number,
   rng: () => number
 ): { path: string; start: { x: number; y: number }; finish: { x: number; y: number } } {
-  const cx = 100;
-  const cy = 88;
   const loop = buildLoopPath(radius * 0.72, 7 + Math.floor(rng() * 3), rng, rotation);
   const stemAngle = rotation + Math.PI / 2 + (rng() * 0.6 - 0.3);
   const stemLength = 34 + rng() * 18;

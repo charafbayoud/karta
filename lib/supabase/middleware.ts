@@ -11,7 +11,28 @@ function applySessionCookies(
   return response;
 }
 
+/** Keep auth cookies on one canonical host (matches Vercel www redirect). */
+function canonicalHostRedirect(request: NextRequest): NextResponse | null {
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
+
+  if (process.env.NODE_ENV !== "production" || !host || host === "www.karta.club") {
+    return null;
+  }
+
+  if (host === "karta.club") {
+    const url = request.nextUrl.clone();
+    url.protocol = "https:";
+    url.host = "www.karta.club";
+    return NextResponse.redirect(url, 308);
+  }
+
+  return null;
+}
+
 export async function updateSession(request: NextRequest) {
+  const canonical = canonicalHostRedirect(request);
+  if (canonical) return canonical;
+
   let supabaseResponse = NextResponse.next({ request });
   let pendingCookies: { name: string; value: string; options: CookieOptions }[] = [];
 

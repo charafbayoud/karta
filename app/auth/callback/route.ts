@@ -9,19 +9,24 @@ export async function GET(request: NextRequest) {
   const nextParam = requestUrl.searchParams.get("next") ?? "/dashboard";
   const safeNext = nextParam.startsWith("/") ? nextParam : "/dashboard";
 
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const redirectOrigin =
+    process.env.NODE_ENV === "production" && forwardedHost
+      ? `https://${forwardedHost.split(",")[0]?.trim()}`
+      : requestUrl.origin;
+
   if (!code) {
-    return NextResponse.redirect(`${requestUrl.origin}/login?error=auth`);
+    return NextResponse.redirect(`${redirectOrigin}/login?error=auth`);
   }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    return NextResponse.redirect(`${requestUrl.origin}/login?error=auth`);
+    return NextResponse.redirect(`${redirectOrigin}/login?error=auth`);
   }
 
   const cookieStore = await cookies();
-  const pendingCookies: { name: string; value: string; options: CookieOptions }[] = [];
 
   const supabase = createServerClient(url, key, {
     cookies: {
@@ -29,13 +34,8 @@ export async function GET(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-        pendingCookies.push(...cookiesToSet);
         cookiesToSet.forEach(({ name, value, options }) => {
-          try {
-            cookieStore.set(name, value, options);
-          } catch {
-            // Response will carry cookies below.
-          }
+          cookieStore.set(name, value, options);
         });
       },
     },
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error("OAuth exchangeCodeForSession failed:", error.message);
-    return NextResponse.redirect(`${requestUrl.origin}/login?error=auth`);
+    return NextResponse.redirect(`${redirectOrigin}/login?error=auth&reason=exchange`);
   }
 
   const {
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user?.email) {
-    return NextResponse.redirect(`${requestUrl.origin}/login?error=auth`);
+    return NextResponse.redirect(`${redirectOrigin}/login?error=auth&reason=no-user`);
   }
 
   const name =
@@ -81,17 +81,5 @@ export async function GET(request: NextRequest) {
       ? "/signup/onboarding"
       : safeNext;
 
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const redirectOrigin =
-    process.env.NODE_ENV === "production" && forwardedHost
-      ? `https://${forwardedHost}`
-      : requestUrl.origin;
-
-  const response = NextResponse.redirect(`${redirectOrigin}${redirectPath}`);
-
-  pendingCookies.forEach(({ name, value, options }) => {
-    response.cookies.set(name, value, options);
-  });
-
-  return response;
+  return NextResponse.redirect(`${redirectOrigin}${redirectPath}`);
 }
