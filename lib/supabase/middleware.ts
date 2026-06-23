@@ -64,7 +64,13 @@ export async function updateSession(request: NextRequest) {
       process.env.NODE_ENV === "development" &&
       process.env.KARTA_DEV_BYPASS_AUTH === "true";
 
-    const protectedPrefixes = ["/dashboard", "/my-routes", "/signup/onboarding"];
+    const protectedPrefixes = [
+      "/dashboard",
+      "/my-routes",
+      "/signup/onboarding",
+      "/app",
+      "/outdoor",
+    ];
     const isProtected = protectedPrefixes.some((prefix) =>
       request.nextUrl.pathname.startsWith(prefix)
     );

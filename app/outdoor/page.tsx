@@ -1,17 +1,15 @@
+import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { StravaConnectPanel } from "@/components/dashboard/StravaConnectPanel";
 import { RouteGeneratorWizard } from "@/components/outdoor/RouteGeneratorWizard";
 import { getCurrentProfile } from "@/lib/auth/profile";
-import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/auth/require-user";
+import { isStravaLinked } from "@/lib/strava/linked";
 
 export default async function OutdoorPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const profile = user ? await getCurrentProfile() : null;
-  const stravaConnected = Boolean(profile?.strava_connected);
+  const user = await requireUser("/outdoor");
+  const profile = await getCurrentProfile();
+  const stravaConnected = isStravaLinked(profile, user);
 
   return (
     <DashboardShell activePath="/outdoor">
@@ -24,15 +22,9 @@ export default async function OutdoorPage() {
           </p>
         </header>
 
-        {!user && (
-          <p className="dashboard-notice dashboard-notice--warn">
-            <a href="/login?next=/outdoor">Sign in</a> to generate a loop.
-          </p>
-        )}
+        {!stravaConnected && <StravaConnectPanel returnTo="/outdoor" compact />}
 
-        {user && !stravaConnected && <StravaConnectPanel returnTo="/outdoor" compact />}
-
-        {user && stravaConnected && <RouteGeneratorWizard />}
+        {stravaConnected && <RouteGeneratorWizard />}
       </div>
     </DashboardShell>
   );

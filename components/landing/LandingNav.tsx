@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { signOut } from "@/lib/auth/actions";
 
-export function LandingNav() {
+type LandingNavProps = {
+  isAuthenticated?: boolean;
+};
+
+export function LandingNav({ isAuthenticated = false }: LandingNavProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -29,12 +34,27 @@ export function LandingNav() {
         </nav>
 
         <div className="lp-nav-actions">
-          <Link href="/login" className="lp-nav-login">
-            Log in
-          </Link>
-          <Link href="/signup" className="lp-btn lp-nav-cta">
-            Get started
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link href="/dashboard" className="lp-nav-login">
+                Dashboard
+              </Link>
+              <form action={signOut}>
+                <button type="submit" className="lp-btn lp-nav-cta">
+                  Logout
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="lp-nav-login">
+                Log in
+              </Link>
+              <Link href="/signup" className="lp-btn lp-nav-cta">
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

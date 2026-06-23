@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { signOut } from "@/lib/auth/actions";
 
-export function LandingFooter() {
+type LandingFooterProps = {
+  isAuthenticated?: boolean;
+};
+
+export function LandingFooter({ isAuthenticated = false }: LandingFooterProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -129,11 +134,19 @@ export function LandingFooter() {
                 <a href="#destinations">Destinations</a>
               </li>
               <li>
-                <Link href="/login">Log in</Link>
+                {isAuthenticated ? (
+                  <form action={signOut} className="lp-footer-logout-form">
+                    <button type="submit">Logout</button>
+                  </form>
+                ) : (
+                  <Link href="/login">Log in</Link>
+                )}
               </li>
-              <li>
-                <Link href="/signup">Sign up</Link>
-              </li>
+              {!isAuthenticated && (
+                <li>
+                  <Link href="/signup">Sign up</Link>
+                </li>
+              )}
             </ul>
           </div>
 

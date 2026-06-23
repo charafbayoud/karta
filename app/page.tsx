@@ -7,11 +7,15 @@ import { LandingNav } from "@/components/landing/LandingNav";
 import { RoutePreview } from "@/components/landing/RoutePreview";
 import { SecondaryGrid } from "@/components/landing/SecondaryGrid";
 import { SocialProofBar } from "@/components/landing/SocialProofBar";
+import { getOptionalUser } from "@/lib/auth/require-user";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getOptionalUser();
+  const isAuthenticated = Boolean(user);
+
   return (
     <div className="lp">
-      <LandingNav />
+      <LandingNav isAuthenticated={isAuthenticated} />
       <main id="main">
         <HeroSection />
         <RoutePreview />
@@ -21,7 +25,7 @@ export default function HomePage() {
         <DestinationsSection />
         <ClosingCTA />
       </main>
-      <LandingFooter />
+      <LandingFooter isAuthenticated={isAuthenticated} />
     </div>
   );
 }

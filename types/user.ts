@@ -32,6 +32,7 @@ export interface Profile {
   primary_sport: PrimarySport | null;
   primary_experience: PrimaryExperience | null;
   strava_connected: boolean;
+  strava_athlete_id?: number | null;
   created_at: string;
 }
 
