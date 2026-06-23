@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { signInWithEmail, type AuthActionState } from "@/lib/auth/actions";
+import { StravaAuthButton } from "./StravaAuthButton";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
   const [state, formAction, pending] = useActionState<AuthActionState, FormData>(
@@ -14,7 +15,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     <div className="auth-card">
       <p className="karta-label">Bon retour</p>
       <h1>Connexion</h1>
-      <p className="auth-sub">Connecte-toi avec ton email pour accéder au dashboard.</p>
+      <p className="auth-sub">Connecte-toi avec ton email ou ton compte Strava.</p>
 
       <form action={formAction} className="auth-form">
         <input type="hidden" name="next" value={nextPath} />
@@ -35,6 +36,16 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           {pending ? "Connexion…" : "Se connecter"}
         </button>
       </form>
+
+      <div className="auth-divider">
+        <span>ou</span>
+      </div>
+
+      <StravaAuthButton
+        mode="login"
+        returnTo={nextPath}
+        className="btn-secondary auth-oauth-btn auth-oauth-strava"
+      />
 
       <p className="auth-switch">
         Pas encore de compte ? <Link href="/signup">S&apos;inscrire</Link>

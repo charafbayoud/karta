@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUpWithEmail, type AuthActionState } from "@/lib/auth/actions";
+import { StravaAuthButton } from "./StravaAuthButton";
 import type { PrimaryExperience, PrimarySport } from "@/types/user";
 import {
   PRIMARY_EXPERIENCE_LABELS,
@@ -54,6 +55,13 @@ export function SignupForm() {
             <button type="button" className="btn-primary auth-submit" onClick={() => setStep(2)}>
               Continuer
             </button>
+            <div className="auth-divider">
+              <span>ou</span>
+            </div>
+            <StravaAuthButton
+              mode="signup"
+              className="btn-secondary auth-oauth-btn auth-oauth-strava"
+            />
           </>
         )}
 
