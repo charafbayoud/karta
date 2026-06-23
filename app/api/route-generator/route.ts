@@ -3,7 +3,6 @@ import { generateGpx } from "@/lib/gpx-generator";
 import { generateLoopVariants, type GeneratedLoop } from "@/lib/route-generator/loop";
 import { exploreStravaSegments } from "@/lib/strava/segments";
 import { requireAuthenticatedUser } from "@/lib/strava/session";
-import { getValidStravaAccessToken } from "@/lib/strava/tokens";
 import type {
   RouteGeneratorRequest,
   RouteGeneratorResponse,
@@ -46,14 +45,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Connecte-toi à KARTA." }, { status: 401 });
   }
 
-  const token = await getValidStravaAccessToken(auth.user.id);
-  if (!token) {
-    return NextResponse.json(
-      { error: "Connecte Strava pour chercher des segments près de toi." },
-      { status: 403 }
-    );
-  }
-
   let body: RouteGeneratorRequest;
   try {
     body = await request.json();
@@ -70,13 +61,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const segments = await exploreStravaSegments(
-      auth.user.id,
-      body.start.lat,
-      body.start.lng,
-      body.sport,
-      segmentSearchRadiusKm(body.distanceKm)
-    );
+    let segments: Awaited<ReturnType<typeof exploreStravaSegments>> = [];
+    try {
+      segments = await exploreStravaSegments(
+        auth.user.id,
+        body.start.lat,
+        body.start.lng,
+        body.sport,
+        segmentSearchRadiusKm(body.distanceKm)
+      );
+    } catch (segmentError) {
+      console.warn("[route-generator] Strava segments unavailable", segmentError);
+    }
 
     const { primary, alternatives } = await generateLoopVariants({
       start: body.start,

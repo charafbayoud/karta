@@ -5,8 +5,8 @@ import {
 } from "@/components/dashboard/StravaConnect";
 import { getCurrentProfile } from "@/lib/auth/profile";
 import { isDevAuthBypass, isStravaConfigured } from "@/lib/env";
-import { getStravaRedirectUri } from "@/lib/strava/config";
 import { buildStravaLoginUrl } from "@/lib/strava/urls";
+import { hasStravaAccess } from "@/lib/strava/linked";
 import { createClient } from "@/lib/supabase/server";
 
 type StravaConnectPanelProps = {
@@ -25,8 +25,7 @@ export async function StravaConnectPanel({
 
   const profile = user ? await getCurrentProfile() : null;
   const stravaReady = isStravaConfigured();
-  const connected = Boolean(profile?.strava_connected);
-  const redirectUri = getStravaRedirectUri();
+  const connected = user ? await hasStravaAccess(user.id, profile, user) : false;
   const devBypass = isDevAuthBypass();
 
   return (
@@ -46,7 +45,7 @@ export async function StravaConnectPanel({
       ) : (
         <>
           <div>
-            <h2>Connecter Strava</h2>
+            <h2>Lier Strava pour Outdoor</h2>
             {devBypass && !user && (
               <p className="dashboard-notice dashboard-notice--warn" role="status">
                 Mode test actif : connecte-toi à KARTA pour lier Strava (le bypass ne suffit pas).
@@ -54,21 +53,16 @@ export async function StravaConnectPanel({
             )}
             {!user ? (
               <p>
-                Étape 1 — connecte-toi à KARTA. Étape 2 — autorise Strava sur leur site.
+                Connecte-toi à KARTA, puis autorise Strava — une seule fois suffit pour Outdoor.
               </p>
             ) : !stravaReady ? (
               <p>Strava n&apos;est pas configuré sur ce serveur.</p>
             ) : (
-              <>
-                <p>
-                  Clique sur le bouton orange — tu seras redirigé vers le site Strava pour
-                  autoriser KARTA.
-                </p>
-                <p className="dashboard-hint">
-                  Callback Strava (à configurer sur strava.com/settings/api) :{" "}
-                  <code>{redirectUri}</code>
-                </p>
-              </>
+              <p>
+                Tu es connecté à KARTA. Outdoor utilise tes segments Strava — clique ci-dessous
+                pour autoriser Strava <strong>une seule fois</strong>. Tu n&apos;auras plus à le
+                refaire ensuite.
+              </p>
             )}
           </div>
           {!user ? (

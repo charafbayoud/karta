@@ -1,5 +1,5 @@
 import { STRAVA_API_BASE } from "@/lib/strava/config";
-import { getValidStravaAccessToken } from "@/lib/strava/tokens";
+import { getStravaExploreAccessToken } from "@/lib/strava/tokens";
 
 export type StravaExploreSegment = {
   id: number;
@@ -37,9 +37,9 @@ export async function exploreStravaSegments(
   sport: "cycling" | "running" | "walking",
   radiusKm = 8
 ): Promise<StravaExploreSegment[]> {
-  const accessToken = await getValidStravaAccessToken(userId);
+  const accessToken = await getStravaExploreAccessToken(userId);
   if (!accessToken) {
-    throw new Error("Connecte ton compte Strava pour utiliser le Route Generator.");
+    return [];
   }
 
   const url = new URL(`${STRAVA_API_BASE}/segments/explore`);

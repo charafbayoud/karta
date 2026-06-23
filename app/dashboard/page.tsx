@@ -67,7 +67,7 @@ export default async function DashboardPage() {
           <Link href="/outdoor" className="dashboard-quick-card dashboard-quick-card--premium">
             <ModeIcon type="outdoor" />
             <h2>Ride Outdoor</h2>
-            <p>Strava loops on real roads, GPX ready.</p>
+            <p>GPX loops on real roads — Strava segments or Google Routes.</p>
             <span className="dashboard-card-link">Generate loop →</span>
           </Link>
         </section>

@@ -142,19 +142,11 @@ export function RouteGeneratorWizard() {
   );
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
-  const [stravaConnected, setStravaConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<RouteGeneratorResult | null>(null);
   const [alternatives, setAlternatives] = useState<RouteGeneratorResult[]>([]);
-
-  useEffect(() => {
-    fetch("/api/strava/status")
-      .then((res) => res.json())
-      .then((data) => setStravaConnected(Boolean(data.connected)))
-      .catch(() => setStravaConnected(false));
-  }, []);
 
   useEffect(() => {
     const distances = getRouteGeneratorDistances(sport);
@@ -285,19 +277,6 @@ export function RouteGeneratorWizard() {
     }
   }
 
-  if (stravaConnected === false) {
-    return (
-      <div className="outdoor-step">
-        <p className="auth-error" role="alert">
-          Connecte Strava pour utiliser le Route Generator.
-        </p>
-        <a href="/api/strava/auth?returnTo=/outdoor" className="btn-primary">
-          Connecter Strava
-        </a>
-      </div>
-    );
-  }
-
   return (
     <div className="outdoor-wizard product-wizard">
       <div className="product-progress" aria-label="Progress">
@@ -411,8 +390,8 @@ export function RouteGeneratorWizard() {
             </dl>
             <ul className="product-summary-notes">
               <li>Fresh route every generation</li>
-              <li>Up to 3 alternatives</li>
-              <li>GPX for Garmin & Wahoo</li>
+              <li>Strava segments when available</li>
+              <li>Google Routes fallback + GPX export</li>
             </ul>
           </div>
         </aside>
@@ -429,7 +408,7 @@ export function RouteGeneratorWizard() {
         <section className="product-section product-results">
           <h2>Alternatives nearby</h2>
           <p className="outdoor-hint">
-            Same ~{distanceKm} km target — different Strava segments each time.
+            Same ~{distanceKm} km target — different route variants each time.
           </p>
           <div className="route-generator-alternatives" role="list">
             {alternatives.map((alternative) => (

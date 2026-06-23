@@ -1,15 +1,9 @@
-import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { StravaConnectPanel } from "@/components/dashboard/StravaConnectPanel";
 import { RouteGeneratorWizard } from "@/components/outdoor/RouteGeneratorWizard";
-import { getCurrentProfile } from "@/lib/auth/profile";
 import { requireUser } from "@/lib/auth/require-user";
-import { isStravaLinked } from "@/lib/strava/linked";
 
 export default async function OutdoorPage() {
-  const user = await requireUser("/outdoor");
-  const profile = await getCurrentProfile();
-  const stravaConnected = isStravaLinked(profile, user);
+  await requireUser("/outdoor");
 
   return (
     <DashboardShell activePath="/outdoor">
@@ -18,13 +12,11 @@ export default async function OutdoorPage() {
           <p className="karta-label">Ride Outdoor</p>
           <h1>Generate a loop</h1>
           <p className="dashboard-sub">
-            Local Strava segments, road-routed GPX, distance matched to your target.
+            Strava segments when available, road-routed GPX loops via Google Routes.
           </p>
         </header>
 
-        {!stravaConnected && <StravaConnectPanel returnTo="/outdoor" compact />}
-
-        {stravaConnected && <RouteGeneratorWizard />}
+        <RouteGeneratorWizard />
       </div>
     </DashboardShell>
   );

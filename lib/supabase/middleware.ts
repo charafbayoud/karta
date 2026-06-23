@@ -69,6 +69,7 @@ export async function updateSession(request: NextRequest) {
       "/my-routes",
       "/signup/onboarding",
       "/app",
+      "/indoor",
       "/outdoor",
     ];
     const isProtected = protectedPrefixes.some((prefix) =>
