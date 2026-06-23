@@ -4,12 +4,15 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { signInWithEmail, type AuthActionState } from "@/lib/auth/actions";
 import { StravaAuthButton } from "./StravaAuthButton";
+import { useAuthActionRedirect } from "./useAuthActionRedirect";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
   const [state, formAction, pending] = useActionState<AuthActionState, FormData>(
     signInWithEmail,
     {}
   );
+
+  useAuthActionRedirect(state);
 
   return (
     <div className="auth-card">

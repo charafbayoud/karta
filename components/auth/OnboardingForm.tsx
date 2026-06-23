@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { completeOnboarding, type AuthActionState } from "@/lib/auth/actions";
 import type { PrimaryExperience, PrimarySport } from "@/types/user";
 import {
   PRIMARY_EXPERIENCE_LABELS,
   PRIMARY_SPORT_LABELS,
 } from "@/types/user";
-import { useState } from "react";
+import { useAuthActionRedirect } from "./useAuthActionRedirect";
 
 const SPORTS: PrimarySport[] = ["cycling", "running", "walking"];
 const EXPERIENCES: PrimaryExperience[] = ["indoor", "outdoor", "both"];
@@ -19,6 +19,8 @@ export function OnboardingForm() {
     completeOnboarding,
     {}
   );
+
+  useAuthActionRedirect(state);
 
   return (
     <div className="auth-card">

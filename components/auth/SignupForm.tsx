@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUpWithEmail, type AuthActionState } from "@/lib/auth/actions";
 import { StravaAuthButton } from "./StravaAuthButton";
+import { useAuthActionRedirect } from "./useAuthActionRedirect";
 import type { PrimaryExperience, PrimarySport } from "@/types/user";
 import {
   PRIMARY_EXPERIENCE_LABELS,
@@ -21,6 +22,8 @@ export function SignupForm() {
     signUpWithEmail,
     {}
   );
+
+  useAuthActionRedirect(state);
 
   return (
     <div className="auth-card">
@@ -109,6 +112,11 @@ export function SignupForm() {
             {state.error && (
               <p className="auth-error" role="alert">
                 {state.error}
+              </p>
+            )}
+            {state.message && (
+              <p className="dashboard-notice" role="status">
+                {state.message}
               </p>
             )}
             <div className="auth-step-actions">

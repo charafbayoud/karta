@@ -8,6 +8,8 @@ import type { PrimaryExperience, PrimarySport } from "@/types/user";
 
 export type AuthActionState = {
   error?: string;
+  message?: string;
+  redirectTo?: string;
 };
 
 export async function signUpWithEmail(
@@ -66,7 +68,14 @@ export async function signUpWithEmail(
     console.error("Welcome email failed:", emailError);
   }
 
-  redirect("/dashboard");
+  if (!data.session) {
+    return {
+      message: "Compte créé. Vérifie ton email pour confirmer, puis connecte-toi.",
+      redirectTo: "/login",
+    };
+  }
+
+  return { redirectTo: "/dashboard" };
 }
 
 export async function signInWithEmail(
@@ -90,7 +99,7 @@ export async function signInWithEmail(
     return { error: error.message };
   }
 
-  redirect(next.startsWith("/") ? next : "/dashboard");
+  return { redirectTo: next.startsWith("/") ? next : "/dashboard" };
 }
 
 export async function completeOnboarding(
@@ -131,7 +140,7 @@ export async function completeOnboarding(
     return { error: "Unable to save your preferences." };
   }
 
-  redirect("/dashboard");
+  return { redirectTo: "/dashboard" };
 }
 
 export async function signOut() {
