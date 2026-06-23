@@ -1,4 +1,8 @@
-import { getStravaDatabaseStatus } from "@/lib/strava/database-status";
+import Link from "next/link";
+import {
+  getStravaDatabaseStatus,
+  SUPABASE_SQL_EDITOR_URL,
+} from "@/lib/strava/database-status";
 
 export async function StravaSetupBanner() {
   const status = await getStravaDatabaseStatus();
@@ -8,7 +12,7 @@ export async function StravaSetupBanner() {
   return (
     <div className="auth-setup-banner" role="alert">
       <strong>Strava n&apos;est pas encore prêt sur ce serveur.</strong>
-      <p>{status.hint}</p>
+      {status.hint ? <p>{status.hint}</p> : null}
       {!status.configured ? (
         <p className="auth-setup-banner-steps">
           1. Va sur{" "}
@@ -24,11 +28,17 @@ export async function StravaSetupBanner() {
         </p>
       ) : (
         <p className="auth-setup-banner-steps">
-          1. supabase.com → ton projet → SQL Editor
+          1.{" "}
+          <Link href="/setup/strava-sql">Ouvre la page SQL KARTA</Link> → copie tout le script
           <br />
-          2. Colle le fichier <code>supabase/RUN-ME-STRAVA.sql</code>
+          2.{" "}
+          <a href={SUPABASE_SQL_EDITOR_URL} target="_blank" rel="noopener noreferrer">
+            Colle dans Supabase → SQL Editor
+          </a>{" "}
+          → clique <strong>Run</strong>
           <br />
-          3. Clique Run → recharge cette page
+          3. Recharge cette page (ne clique pas sur <code>supabase/RUN-ME-STRAVA.sql</code> — ce
+          n&apos;est pas une URL web)
         </p>
       )}
     </div>

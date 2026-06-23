@@ -1,11 +1,12 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { readSupabaseAnonKey, readSupabaseUrl } from "@/lib/supabase/env";
 
 export async function createClient(): Promise<SupabaseClient> {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = readSupabaseUrl();
+  const key = readSupabaseAnonKey();
 
   if (!url || !key) {
     throw new Error(

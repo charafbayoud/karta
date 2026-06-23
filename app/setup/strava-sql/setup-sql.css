@@ -1,0 +1,13 @@
+.setup-sql-textarea {
+  width: 100%;
+  min-height: 22rem;
+  margin: 1.25rem 0;
+  padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--background) 92%, var(--foreground) 8%);
+  resize: vertical;
+}

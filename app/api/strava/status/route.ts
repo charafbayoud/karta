@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { getStravaDatabaseStatus } from "@/lib/strava/database-status";
 import { isStravaConfigured, getStravaRedirectUri } from "@/lib/strava/config";
 import { getValidStravaAccessToken } from "@/lib/strava/tokens";
 import { requireAuthenticatedUser } from "@/lib/strava/session";
@@ -7,22 +7,9 @@ import { getCurrentProfile } from "@/lib/auth/profile";
 
 export async function GET() {
   const configured = isStravaConfigured();
-
-  let databaseReady = false;
-  let databaseHint: string | undefined;
-
-  try {
-    const admin = getSupabaseAdmin();
-    const { error } = await admin.from("profiles").select("id").limit(1);
-    if (error?.code === "PGRST205") {
-      databaseHint =
-        "Run supabase/03-v2-profiles.sql and 04-strava-athlete-id.sql in Supabase SQL Editor.";
-    } else {
-      databaseReady = !error;
-    }
-  } catch {
-    databaseHint = "Supabase admin client unavailable.";
-  }
+  const dbStatus = await getStravaDatabaseStatus();
+  const databaseReady = dbStatus.ready;
+  const databaseHint = dbStatus.hint ?? undefined;
 
   if (!configured) {
     return NextResponse.json({
