@@ -10,6 +10,46 @@ export type AuthActionState = {
   error?: string;
 };
 
+async function resolveAuthOriginAsync(): Promise<string> {
+  const { headers } = await import("next/headers");
+  const headerStore = await headers();
+  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
+  const protocol = headerStore.get("x-forwarded-proto") ?? "https";
+
+  if (host) {
+    return `${protocol}://${host}`;
+  }
+
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+  if (configured) return configured;
+
+  return "http://localhost:3000";
+}
+
+export async function signInWithGoogle(formData: FormData): Promise<void> {
+  const nextRaw = String(formData.get("next") ?? "/dashboard");
+  const next = nextRaw.startsWith("/") ? nextRaw : "/dashboard";
+  const origin = await resolveAuthOriginAsync();
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
+  });
+
+  if (error) {
+    redirect(`${origin}/login?error=auth`);
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  redirect(`${origin}/login?error=auth`);
+}
+
 export async function signUpWithEmail(
   _prev: AuthActionState,
   formData: FormData

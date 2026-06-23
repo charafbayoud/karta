@@ -1,14 +1,25 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+function applySessionCookies(
+  response: NextResponse,
+  cookiesToSet: { name: string; value: string; options: CookieOptions }[]
+) {
+  cookiesToSet.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options);
+  });
+  return response;
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
+  let pendingCookies: { name: string; value: string; options: CookieOptions }[] = [];
 
   const devBypass =
     process.env.NODE_ENV === "development" &&
     process.env.KARTA_DEV_BYPASS_AUTH === "true";
 
-  const protectedPrefixes = ["/dashboard", "/my-routes"];
+  const protectedPrefixes = ["/dashboard", "/my-routes", "/signup/onboarding"];
   const isProtected = protectedPrefixes.some((prefix) =>
     request.nextUrl.pathname.startsWith(prefix)
   );
@@ -30,13 +41,12 @@ export async function updateSession(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+        pendingCookies = cookiesToSet;
         cookiesToSet.forEach(({ name, value }) => {
           request.cookies.set(name, value);
         });
         supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) => {
-          supabaseResponse.cookies.set(name, value, options);
-        });
+        applySessionCookies(supabaseResponse, cookiesToSet);
       },
     },
   });
@@ -49,7 +59,7 @@ export async function updateSession(request: NextRequest) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+    return applySessionCookies(NextResponse.redirect(loginUrl), pendingCookies);
   }
 
   if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
@@ -57,7 +67,7 @@ export async function updateSession(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = next?.startsWith("/") ? next : "/dashboard";
     redirectUrl.search = "";
-    return NextResponse.redirect(redirectUrl);
+    return applySessionCookies(NextResponse.redirect(redirectUrl), pendingCookies);
   }
 
   return supabaseResponse;
