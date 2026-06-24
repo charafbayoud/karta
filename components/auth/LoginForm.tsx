@@ -30,6 +30,9 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           Mot de passe
           <input type="password" name="password" required autoComplete="current-password" />
         </label>
+        <p className="auth-forgot-link">
+          <Link href="/login/forgot-password">Mot de passe oublié ?</Link>
+        </p>
         {state.error && (
           <p className="auth-error" role="alert">
             {state.error}

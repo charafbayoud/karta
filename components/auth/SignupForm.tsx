@@ -16,6 +16,10 @@ const EXPERIENCES: PrimaryExperience[] = ["indoor", "outdoor", "both"];
 
 export function SignupForm() {
   const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [step1Error, setStep1Error] = useState<string | null>(null);
   const [sport, setSport] = useState<PrimarySport>("cycling");
   const [experience, setExperience] = useState<PrimaryExperience>("both");
   const [state, formAction, pending] = useActionState<AuthActionState, FormData>(
@@ -24,6 +28,27 @@ export function SignupForm() {
   );
 
   useAuthActionRedirect(state);
+
+  function continueFromStep1() {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedName) {
+      setStep1Error("Indique ton prénom.");
+      return;
+    }
+    if (!trimmedEmail || !trimmedEmail.includes("@")) {
+      setStep1Error("Indique un email valide.");
+      return;
+    }
+    if (password.length < 8) {
+      setStep1Error("Le mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+
+    setStep1Error(null);
+    setStep(2);
+  }
 
   return (
     <div className="auth-card">
@@ -34,28 +59,57 @@ export function SignupForm() {
       <form action={formAction} className="auth-form">
         <input type="hidden" name="primary_sport" value={sport} />
         <input type="hidden" name="primary_experience" value={experience} />
+        {step >= 2 && (
+          <>
+            <input type="hidden" name="name" value={name.trim()} />
+            <input type="hidden" name="email" value={email.trim().toLowerCase()} />
+            <input type="hidden" name="password" value={password} />
+          </>
+        )}
 
         {step === 1 && (
           <>
             <label>
               Prénom
-              <input type="text" name="name" required autoComplete="given-name" />
+              <input
+                type="text"
+                name="name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+                autoComplete="given-name"
+              />
             </label>
             <label>
               Email
-              <input type="email" name="email" required autoComplete="email" />
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                autoComplete="email"
+              />
             </label>
             <label>
               Mot de passe
               <input
                 type="password"
                 name="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 required
                 minLength={8}
                 autoComplete="new-password"
               />
             </label>
-            <button type="button" className="btn-primary auth-submit" onClick={() => setStep(2)}>
+            <p className="auth-field-hint">Minimum 8 caractères. Tu pourras le réinitialiser depuis la connexion.</p>
+            {step1Error && (
+              <p className="auth-error" role="alert">
+                {step1Error}
+              </p>
+            )}
+            <button type="button" className="btn-primary auth-submit" onClick={continueFromStep1}>
               Continuer
             </button>
             <div className="auth-divider">

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { upsertProfile } from "@/lib/auth/profile";
+import { getAppUrl } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { sendSignupWelcomeEmail } from "@/lib/resend";
 import type { PrimaryExperience, PrimarySport } from "@/types/user";
@@ -25,11 +26,11 @@ export async function signUpWithEmail(
   const primaryExperience = formData.get("primary_experience") as PrimaryExperience | null;
 
   if (!email || !password || password.length < 8) {
-    return { error: "Use a valid email and a password of at least 8 characters." };
+    return { error: "Indique un email valide et un mot de passe d'au moins 8 caractères." };
   }
 
   if (!primarySport || !primaryExperience) {
-    return { error: "Choose your sport and primary experience." };
+    return { error: "Choisis ton sport et ton expérience principale." };
   }
 
   const supabase = await createClient();
@@ -46,7 +47,7 @@ export async function signUpWithEmail(
   }
 
   if (!data.user) {
-    return { error: "Unable to create your account. Please try again." };
+    return { error: "Impossible de créer le compte. Réessaie." };
   }
 
   try {
@@ -59,7 +60,7 @@ export async function signUpWithEmail(
     });
   } catch (profileError) {
     console.error("Profile creation failed:", profileError);
-    return { error: "Account created but profile setup failed. Contact support." };
+    return { error: "Compte créé mais la configuration a échoué. Contacte le support." };
   }
 
   try {
@@ -89,7 +90,7 @@ export async function signInWithEmail(
   const next = String(formData.get("next") ?? "/dashboard");
 
   if (!email || !password) {
-    return { error: "Enter your email and password." };
+    return { error: "Indique ton email et ton mot de passe." };
   }
 
   const supabase = await createClient();
@@ -100,6 +101,68 @@ export async function signInWithEmail(
   }
 
   return { redirectTo: next.startsWith("/") ? next : "/dashboard" };
+}
+
+export async function requestPasswordReset(
+  _prev: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+
+  if (!email) {
+    return { error: "Indique ton adresse email." };
+  }
+
+  const supabase = await createClient();
+  const redirectTo = `${getAppUrl()}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return {
+    message:
+      "Si un compte existe avec cet email, tu recevras un lien pour choisir un nouveau mot de passe.",
+  };
+}
+
+export async function updatePassword(
+  _prev: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirm_password") ?? "");
+
+  if (password.length < 8) {
+    return { error: "Le mot de passe doit contenir au moins 8 caractères." };
+  }
+
+  if (password !== confirmPassword) {
+    return { error: "Les mots de passe ne correspondent pas." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      error: "Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.",
+      redirectTo: "/login/forgot-password",
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { redirectTo: "/dashboard" };
 }
 
 export async function completeOnboarding(

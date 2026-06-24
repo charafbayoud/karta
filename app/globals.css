@@ -1661,6 +1661,25 @@ p {
   color: var(--text-muted);
 }
 
+.auth-forgot-link {
+  margin: -0.25rem 0 0;
+  text-align: right;
+  font-size: 0.8125rem;
+}
+
+.auth-forgot-link a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-field-hint {
+  margin: -0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 .auth-feature-list {
   margin: 1rem 0 1.25rem;
   padding-left: 1.125rem;

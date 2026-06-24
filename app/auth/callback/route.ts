@@ -77,9 +77,11 @@ export async function GET(request: NextRequest) {
     .maybeSingle();
 
   const redirectPath =
-    !profile?.primary_sport || !profile?.primary_experience
-      ? "/signup/onboarding"
-      : safeNext;
+    safeNext === "/reset-password"
+      ? safeNext
+      : !profile?.primary_sport || !profile?.primary_experience
+        ? "/signup/onboarding"
+        : safeNext;
 
   return NextResponse.redirect(`${redirectOrigin}${redirectPath}`);
 }
