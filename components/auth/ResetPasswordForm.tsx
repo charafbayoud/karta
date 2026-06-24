@@ -15,13 +15,13 @@ export function ResetPasswordForm() {
 
   return (
     <div className="auth-card">
-      <p className="karta-label">Nouveau mot de passe</p>
-      <h1>Choisis ton mot de passe</h1>
-      <p className="auth-sub">Minimum 8 caractères.</p>
+      <p className="karta-label">New password</p>
+      <h1>Choose a new password</h1>
+      <p className="auth-sub">Minimum 8 characters.</p>
 
       <form action={formAction} className="auth-form">
         <label>
-          Nouveau mot de passe
+          New password
           <input
             type="password"
             name="password"
@@ -31,7 +31,7 @@ export function ResetPasswordForm() {
           />
         </label>
         <label>
-          Confirmer le mot de passe
+          Confirm password
           <input
             type="password"
             name="confirm_password"
@@ -46,12 +46,12 @@ export function ResetPasswordForm() {
           </p>
         )}
         <button type="submit" className="btn-primary auth-submit" disabled={pending}>
-          {pending ? "Enregistrement…" : "Enregistrer le mot de passe"}
+          {pending ? "Saving…" : "Save password"}
         </button>
       </form>
 
       <p className="auth-switch">
-        <Link href="/login/forgot-password">Demander un nouveau lien</Link>
+        <Link href="/login/forgot-password">Request a new link</Link>
       </p>
     </div>
   );

@@ -16,7 +16,7 @@ export default async function ForgotPasswordPage({
       <main className="auth-page">
         {expired && (
           <p className="auth-error auth-page-error" role="alert">
-            Le lien a expiré ou est invalide. Demande un nouveau lien ci-dessous.
+            This link has expired or is invalid. Request a new one below.
           </p>
         )}
         <ForgotPasswordForm />

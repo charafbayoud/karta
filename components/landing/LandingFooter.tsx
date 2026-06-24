@@ -107,6 +107,24 @@ export function LandingFooter({ isAuthenticated = false }: LandingFooterProps) {
           </div>
 
           <div className="lp-footer-col">
+            <h4>Explore</h4>
+            <ul>
+              <li>
+                <Link href="/cities">Cities</Link>
+              </li>
+              <li>
+                <Link href="/distances">Distances</Link>
+              </li>
+              <li>
+                <Link href="/training">Training</Link>
+              </li>
+              <li>
+                <Link href="/zwift">Zwift routes</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="lp-footer-col">
             <h4>Product</h4>
             <ul>
               <li>

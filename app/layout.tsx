@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Courier_Prime, Inter, Playfair_Display } from "next/font/google";
+import { rootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
 
 const inter = Inter({
@@ -21,11 +22,7 @@ const courier = Courier_Prime({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "KARTA — Indoor & Outdoor Cycling Platform",
-  description:
-    "KARTA helps cyclists ride smarter — Zwift route recommendations and outdoor loop generation at karta.club.",
-};
+export const metadata: Metadata = rootMetadata();
 
 export default function RootLayout({
   children,

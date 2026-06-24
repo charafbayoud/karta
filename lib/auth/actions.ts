@@ -26,11 +26,11 @@ export async function signUpWithEmail(
   const primaryExperience = formData.get("primary_experience") as PrimaryExperience | null;
 
   if (!email || !password || password.length < 8) {
-    return { error: "Indique un email valide et un mot de passe d'au moins 8 caractères." };
+    return { error: "Enter a valid email and a password of at least 8 characters." };
   }
 
   if (!primarySport || !primaryExperience) {
-    return { error: "Choisis ton sport et ton expérience principale." };
+    return { error: "Choose your sport and primary experience." };
   }
 
   const supabase = await createClient();
@@ -47,7 +47,7 @@ export async function signUpWithEmail(
   }
 
   if (!data.user) {
-    return { error: "Impossible de créer le compte. Réessaie." };
+    return { error: "Unable to create your account. Please try again." };
   }
 
   try {
@@ -60,7 +60,7 @@ export async function signUpWithEmail(
     });
   } catch (profileError) {
     console.error("Profile creation failed:", profileError);
-    return { error: "Compte créé mais la configuration a échoué. Contacte le support." };
+    return { error: "Account created but profile setup failed. Contact support." };
   }
 
   try {
@@ -71,7 +71,7 @@ export async function signUpWithEmail(
 
   if (!data.session) {
     return {
-      message: "Compte créé. Vérifie ton email pour confirmer, puis connecte-toi.",
+      message: "Account created. Check your email to confirm, then log in.",
       redirectTo: "/login",
     };
   }
@@ -90,7 +90,7 @@ export async function signInWithEmail(
   const next = String(formData.get("next") ?? "/dashboard");
 
   if (!email || !password) {
-    return { error: "Indique ton email et ton mot de passe." };
+    return { error: "Enter your email and password." };
   }
 
   const supabase = await createClient();
@@ -112,7 +112,7 @@ export async function requestPasswordReset(
     .toLowerCase();
 
   if (!email) {
-    return { error: "Indique ton adresse email." };
+    return { error: "Enter your email address." };
   }
 
   const supabase = await createClient();
@@ -125,7 +125,7 @@ export async function requestPasswordReset(
 
   return {
     message:
-      "Si un compte existe avec cet email, tu recevras un lien pour choisir un nouveau mot de passe.",
+      "If an account exists for that email, you will receive a link to choose a new password.",
   };
 }
 
@@ -137,11 +137,11 @@ export async function updatePassword(
   const confirmPassword = String(formData.get("confirm_password") ?? "");
 
   if (password.length < 8) {
-    return { error: "Le mot de passe doit contenir au moins 8 caractères." };
+    return { error: "Password must be at least 8 characters." };
   }
 
   if (password !== confirmPassword) {
-    return { error: "Les mots de passe ne correspondent pas." };
+    return { error: "Passwords do not match." };
   }
 
   const supabase = await createClient();
@@ -151,7 +151,7 @@ export async function updatePassword(
 
   if (!user) {
     return {
-      error: "Lien expiré ou invalide. Demande un nouveau lien de réinitialisation.",
+      error: "This link has expired or is invalid. Request a new reset link.",
       redirectTo: "/login/forgot-password",
     };
   }

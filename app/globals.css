@@ -4416,3 +4416,154 @@ p {
   font-size: 0.875rem;
   color: var(--lp-muted);
 }
+
+/* Programmatic SEO pages */
+.seo-page {
+  background: var(--lp-bg);
+  color: var(--lp-text);
+}
+
+.seo-main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 6.5rem 1.25rem 4rem;
+}
+
+.seo-breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.seo-breadcrumbs li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.5rem;
+  color: var(--lp-border);
+}
+
+.seo-breadcrumbs a {
+  color: var(--lp-muted);
+  text-decoration: none;
+}
+
+.seo-breadcrumbs a:hover {
+  color: var(--action);
+}
+
+.seo-hero h1 {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  margin: 0.5rem 0 1rem;
+}
+
+.seo-lead {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--lp-muted);
+  max-width: 62ch;
+}
+
+.seo-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.seo-section {
+  margin-top: 2.5rem;
+}
+
+.seo-section h2 {
+  font-size: 1.375rem;
+  margin-bottom: 1rem;
+}
+
+.seo-copy p {
+  color: var(--lp-muted);
+  line-height: 1.75;
+  margin: 0 0 1rem;
+}
+
+.seo-link-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.seo-link-grid a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--lp-text);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.seo-link-grid a:hover {
+  border-color: var(--action);
+}
+
+.seo-link-grid span {
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.seo-faq div {
+  border-top: 1px solid var(--lp-border);
+  padding: 1rem 0;
+}
+
+.seo-faq dt {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.seo-faq dd {
+  margin: 0;
+  color: var(--lp-muted);
+  line-height: 1.6;
+}
+
+.seo-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.seo-stat {
+  border: 1px solid var(--lp-border);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.seo-stat strong {
+  display: block;
+  font-size: 1.125rem;
+}
+
+.seo-stat span {
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+}
+
+.seo-hub-intro {
+  margin-bottom: 2rem;
+  color: var(--lp-muted);
+  line-height: 1.7;
+  max-width: 62ch;
+}

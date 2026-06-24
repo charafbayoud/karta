@@ -12,11 +12,10 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="auth-card">
-      <p className="karta-label">Mot de passe oublié</p>
-      <h1>Réinitialisation</h1>
+      <p className="karta-label">Forgot password</p>
+      <h1>Reset your password</h1>
       <p className="auth-sub">
-        Indique l&apos;email de ton compte. Tu recevras un lien pour choisir un nouveau mot de
-        passe.
+        Enter your account email and we&apos;ll send a link to choose a new password.
       </p>
 
       <form action={formAction} className="auth-form">
@@ -35,12 +34,12 @@ export function ForgotPasswordForm() {
           </p>
         )}
         <button type="submit" className="btn-primary auth-submit" disabled={pending}>
-          {pending ? "Envoi…" : "Envoyer le lien"}
+          {pending ? "Sending…" : "Send reset link"}
         </button>
       </form>
 
       <p className="auth-switch">
-        <Link href="/login">Retour à la connexion</Link>
+        <Link href="/login">Back to log in</Link>
       </p>
     </div>
   );

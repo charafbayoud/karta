@@ -16,9 +16,9 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="auth-card">
-      <p className="karta-label">Bon retour</p>
-      <h1>Connexion</h1>
-      <p className="auth-sub">Connecte-toi avec ton email ou ton compte Strava.</p>
+      <p className="karta-label">Welcome back</p>
+      <h1>Log in</h1>
+      <p className="auth-sub">Sign in with your email or Strava account.</p>
 
       <form action={formAction} className="auth-form">
         <input type="hidden" name="next" value={nextPath} />
@@ -27,11 +27,11 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           <input type="email" name="email" required autoComplete="email" />
         </label>
         <label>
-          Mot de passe
+          Password
           <input type="password" name="password" required autoComplete="current-password" />
         </label>
         <p className="auth-forgot-link">
-          <Link href="/login/forgot-password">Mot de passe oublié ?</Link>
+          <Link href="/login/forgot-password">Forgot password?</Link>
         </p>
         {state.error && (
           <p className="auth-error" role="alert">
@@ -39,12 +39,12 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           </p>
         )}
         <button type="submit" className="btn-primary auth-submit" disabled={pending}>
-          {pending ? "Connexion…" : "Se connecter"}
+          {pending ? "Signing in…" : "Sign in"}
         </button>
       </form>
 
       <div className="auth-divider">
-        <span>ou</span>
+        <span>or</span>
       </div>
 
       <StravaAuthButton
@@ -54,7 +54,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       />
 
       <p className="auth-switch">
-        Pas encore de compte ? <Link href="/signup">S&apos;inscrire</Link>
+        Don&apos;t have an account? <Link href="/signup">Sign up</Link>
       </p>
     </div>
   );

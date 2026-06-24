@@ -8,6 +8,16 @@ import { RoutePreview } from "@/components/landing/RoutePreview";
 import { SecondaryGrid } from "@/components/landing/SecondaryGrid";
 import { SocialProofBar } from "@/components/landing/SocialProofBar";
 import { getOptionalUser } from "@/lib/auth/require-user";
+import { JsonLd, organizationJsonLd, webPageJsonLd } from "@/lib/seo/json-ld";
+import { seoMetadata } from "@/lib/seo/metadata";
+
+export const metadata = seoMetadata({
+  title: "KARTA — Zwift Route Finder & Outdoor Loop Generator",
+  description:
+    "Find the right Zwift route for every workout and generate outdoor cycling, running, and walking loops in any city.",
+  path: "/",
+  keywords: ["zwift route finder", "cycling loop generator", "outdoor route planner", "gpx routes"],
+});
 
 export default async function HomePage() {
   const user = await getOptionalUser();
@@ -15,6 +25,17 @@ export default async function HomePage() {
 
   return (
     <div className="lp">
+      <JsonLd
+        data={[
+          organizationJsonLd(),
+          webPageJsonLd({
+            title: "KARTA — Zwift Route Finder & Outdoor Loop Generator",
+            description:
+              "Find the right Zwift route for every workout and generate outdoor cycling, running, and walking loops in any city.",
+            path: "/",
+          }),
+        ]}
+      />
       <LandingNav isAuthenticated={isAuthenticated} />
       <main id="main">
         <HeroSection />

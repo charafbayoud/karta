@@ -34,15 +34,15 @@ export function SignupForm() {
     const trimmedEmail = email.trim().toLowerCase();
 
     if (!trimmedName) {
-      setStep1Error("Indique ton prénom.");
+      setStep1Error("Enter your first name.");
       return;
     }
     if (!trimmedEmail || !trimmedEmail.includes("@")) {
-      setStep1Error("Indique un email valide.");
+      setStep1Error("Enter a valid email address.");
       return;
     }
     if (password.length < 8) {
-      setStep1Error("Le mot de passe doit contenir au moins 8 caractères.");
+      setStep1Error("Password must be at least 8 characters.");
       return;
     }
 
@@ -52,9 +52,9 @@ export function SignupForm() {
 
   return (
     <div className="auth-card">
-      <p className="karta-label">Rejoindre KARTA</p>
-      <h1>Inscription</h1>
-      <p className="auth-sub">Étape {step} sur 3</p>
+      <p className="karta-label">Join KARTA</p>
+      <h1>Sign up</h1>
+      <p className="auth-sub">Step {step} of 3</p>
 
       <form action={formAction} className="auth-form">
         <input type="hidden" name="primary_sport" value={sport} />
@@ -70,7 +70,7 @@ export function SignupForm() {
         {step === 1 && (
           <>
             <label>
-              Prénom
+              First name
               <input
                 type="text"
                 name="name"
@@ -92,7 +92,7 @@ export function SignupForm() {
               />
             </label>
             <label>
-              Mot de passe
+              Password
               <input
                 type="password"
                 name="password"
@@ -103,17 +103,19 @@ export function SignupForm() {
                 autoComplete="new-password"
               />
             </label>
-            <p className="auth-field-hint">Minimum 8 caractères. Tu pourras le réinitialiser depuis la connexion.</p>
+            <p className="auth-field-hint">
+              Minimum 8 characters. You can reset it anytime from the login page.
+            </p>
             {step1Error && (
               <p className="auth-error" role="alert">
                 {step1Error}
               </p>
             )}
             <button type="button" className="btn-primary auth-submit" onClick={continueFromStep1}>
-              Continuer
+              Continue
             </button>
             <div className="auth-divider">
-              <span>ou</span>
+              <span>or</span>
             </div>
             <StravaAuthButton
               mode="signup"
@@ -124,7 +126,7 @@ export function SignupForm() {
 
         {step === 2 && (
           <>
-            <p className="auth-step-title">Choisis ton sport principal</p>
+            <p className="auth-step-title">Choose your primary sport</p>
             <div className="auth-option-grid">
               {SPORTS.map((value) => (
                 <button
@@ -139,10 +141,10 @@ export function SignupForm() {
             </div>
             <div className="auth-step-actions">
               <button type="button" className="btn-secondary" onClick={() => setStep(1)}>
-                Retour
+                Back
               </button>
               <button type="button" className="btn-primary" onClick={() => setStep(3)}>
-                Continuer
+                Continue
               </button>
             </div>
           </>
@@ -150,7 +152,7 @@ export function SignupForm() {
 
         {step === 3 && (
           <>
-            <p className="auth-step-title">Choisis ton expérience principale</p>
+            <p className="auth-step-title">Choose your primary experience</p>
             <div className="auth-option-grid">
               {EXPERIENCES.map((value) => (
                 <button
@@ -175,10 +177,10 @@ export function SignupForm() {
             )}
             <div className="auth-step-actions">
               <button type="button" className="btn-secondary" onClick={() => setStep(2)}>
-                Retour
+                Back
               </button>
               <button type="submit" className="btn-primary" disabled={pending}>
-                {pending ? "Création…" : "Créer mon compte"}
+                {pending ? "Creating account…" : "Create my account"}
               </button>
             </div>
           </>
@@ -186,7 +188,7 @@ export function SignupForm() {
       </form>
 
       <p className="auth-switch">
-        Déjà un compte ? <Link href="/login">Se connecter</Link>
+        Already have an account? <Link href="/login">Log in</Link>
       </p>
     </div>
   );

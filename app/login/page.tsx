@@ -26,7 +26,7 @@ export default async function LoginPage({
 
   const stravaHint =
     params.reason === "strava" || params.strava === "login_required"
-      ? "Connecte-toi à KARTA — tu seras ensuite redirigé vers Strava."
+      ? "Log in to KARTA — you will then be redirected to Strava."
       : stravaErrorMessage(params.strava);
 
   return (
