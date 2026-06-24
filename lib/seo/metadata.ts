@@ -46,6 +46,11 @@ export function rootMetadata(): Metadata {
     },
     description:
       "KARTA helps cyclists ride smarter with Zwift route recommendations and outdoor loop generation.",
+    icons: {
+      icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+      apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+      shortcut: ["/favicon.ico"],
+    },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
