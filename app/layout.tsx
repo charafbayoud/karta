@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Courier_Prime, Inter, Playfair_Display } from "next/font/google";
+import { GlobalClientShell } from "@/components/shared/GlobalClientShell";
 import { rootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
 
@@ -35,7 +36,10 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} ${courier.variable}`}
       suppressHydrationWarning
     >
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <GlobalClientShell />
+      </body>
     </html>
   );
 }

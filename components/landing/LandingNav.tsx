@@ -6,31 +6,47 @@ import { signOut } from "@/lib/auth/actions";
 
 type LandingNavProps = {
   isAuthenticated?: boolean;
+  /** overlay = transparent over homepage hero; solid = readable bar on light pages */
+  variant?: "overlay" | "solid";
 };
 
-export function LandingNav({ isAuthenticated = false }: LandingNavProps) {
-  const [scrolled, setScrolled] = useState(false);
+export function LandingNav({ isAuthenticated = false, variant = "solid" }: LandingNavProps) {
+  const [scrolled, setScrolled] = useState(variant === "solid");
 
   useEffect(() => {
+    if (variant === "solid") {
+      setScrolled(true);
+      return;
+    }
+
     function onScroll() {
       setScrolled(window.scrollY > 48);
     }
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [variant]);
+
+  const navClassName = [
+    "lp-nav",
+    variant === "overlay" ? "lp-nav--overlay" : "lp-nav--solid",
+    scrolled ? "is-scrolled" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <header className={`lp-nav ${scrolled ? "is-scrolled" : ""}`}>
+    <header className={navClassName}>
       <div className="lp-container lp-nav-inner">
         <Link href="/" className="lp-logo">
           KARTA
         </Link>
 
         <nav className="lp-nav-links" aria-label="Main">
-          <a href="#preview">Routes</a>
-          <a href="#spotlight">Product</a>
-          <a href="#destinations">Destinations</a>
+          <Link href="/#preview">Routes</Link>
+          <Link href="/#spotlight">Product</Link>
+          <Link href="/#destinations">Destinations</Link>
         </nav>
 
         <div className="lp-nav-actions">

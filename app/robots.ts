@@ -9,6 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/dashboard",
         "/my-routes",
+        "/settings",
         "/app",
         "/indoor",
         "/outdoor",

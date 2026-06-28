@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { LandingNav } from "@/components/landing/LandingNav";
 import { OnboardingForm } from "@/components/auth/OnboardingForm";
 import { getCurrentProfile } from "@/lib/auth/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -21,12 +21,12 @@ export default async function OnboardingPage() {
   }
 
   return (
-    <>
-      <Navbar />
+    <div className="lp">
+      <LandingNav variant="solid" isAuthenticated />
       <main className="auth-page">
         <OnboardingForm />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

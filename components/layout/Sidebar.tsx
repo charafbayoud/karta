@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/app", label: "Ride Indoor" },
   { href: "/outdoor", label: "Ride Outdoor" },
   { href: "/my-routes", label: "My Routes" },
+  { href: "/settings", label: "Settings" },
 ];
 
 function isNavActive(activePath: string, href: string) {

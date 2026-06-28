@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { LandingNav } from "@/components/landing/LandingNav";
 import { CopySqlTextarea } from "@/components/setup/CopySqlTextarea";
 import { SUPABASE_SQL_EDITOR_URL } from "@/lib/strava/database-status";
 import "./setup-sql.css";
@@ -14,8 +14,8 @@ export default function StravaSqlSetupPage() {
   );
 
   return (
-    <>
-      <Navbar />
+    <div className="lp">
+      <LandingNav variant="solid" isAuthenticated />
       <main className="auth-page">
         <div className="auth-card" style={{ maxWidth: "48rem" }}>
           <p className="karta-label">Configuration Strava</p>
@@ -44,6 +44,6 @@ export default function StravaSqlSetupPage() {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -67,6 +67,7 @@ export async function updateSession(request: NextRequest) {
     const protectedPrefixes = [
       "/dashboard",
       "/my-routes",
+      "/settings",
       "/signup/onboarding",
       "/app",
       "/indoor",

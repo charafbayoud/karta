@@ -14,7 +14,7 @@ export async function SeoPageShell({
 
   return (
     <div className="lp seo-page">
-      <LandingNav isAuthenticated={Boolean(user)} />
+      <LandingNav isAuthenticated={Boolean(user)} variant="solid" />
       <main id="main" className="seo-main">
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav className="seo-breadcrumbs" aria-label="Breadcrumb">

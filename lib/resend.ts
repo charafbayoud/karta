@@ -1,4 +1,8 @@
 import { Resend } from "resend";
+import {
+  buildKartaEmailHtml,
+  DEFAULT_EMAIL_FEATURES,
+} from "@/lib/email/template";
 import { getAppUrl, isResendConfigured } from "@/lib/env";
 
 let resendClient: Resend | null = null;
@@ -31,52 +35,22 @@ export async function sendWelcomeEmail(
   await resend.emails.send({
     from,
     to: email,
-    subject: "Ton premier parcours Karta t'attend.",
-    html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
-<body style="margin:0;padding:0;background-color:#FAFAF7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAFAF7;padding:48px 24px;">
-    <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background-color:#EDEAE3;border-radius:12px;padding:40px 32px;">
-          <tr>
-            <td align="center" style="padding-bottom:24px;">
-              <p style="margin:0;font-family:Georgia,serif;font-size:28px;color:#1A1A1A;font-weight:500;">KARTA</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding-bottom:16px;">
-              <p style="margin:0;font-size:16px;line-height:1.6;color:#2C2C2C;font-weight:300;">
-                Bienvenue sur la liste d'attente. Ta prochaine sortie Zwift mérite d'être choisie avec intention — pas au hasard.
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding-bottom:32px;">
-              <p style="margin:0;font-size:16px;line-height:1.6;color:#6B6860;font-weight:300;">
-                KARTA te trouve le parcours parfait selon ton temps, ton niveau et ton objectif du jour. Pédale. On s'occupe du reste.
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td align="center">
-              <a href="${appUrl}/app" style="display:inline-block;background-color:#C4622D;color:#FAFAF7;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:500;">
-                Trouver mon parcours
-              </a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-    `.trim(),
+    subject: "You're on the list — your next ride starts here",
+    html: buildKartaEmailHtml({
+      appUrl,
+      preheader: "Zwift routes in seconds. Outdoor loops from Strava. Your first ride is one tap away.",
+      chip: "Waitlist confirmed",
+      headline: "The right route. Every ride.",
+      intro:
+        "Thanks for joining the KARTA waitlist. We're building the fastest way to pick a Zwift route or outdoor loop — so you spend less time choosing and more time riding.",
+      features: DEFAULT_EMAIL_FEATURES,
+      cta: {
+        label: "Start riding free",
+        href: "/signup",
+      },
+      footerNote:
+        "You're receiving this because you joined the KARTA waitlist at karta.club.",
+    }),
   });
 
   return "sent";
@@ -98,45 +72,56 @@ export async function sendSignupWelcomeEmail(
   await resend.emails.send({
     from,
     to: email,
-    subject: "You're in 🚴",
-    html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
-<body style="margin:0;padding:0;background-color:#FAFAF7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAFAF7;padding:48px 24px;">
-    <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background-color:#EDEAE3;border-radius:12px;padding:40px 32px;">
-          <tr>
-            <td align="center" style="padding-bottom:24px;">
-              <p style="margin:0;font-family:Georgia,serif;font-size:28px;color:#1A1A1A;font-weight:500;">KARTA</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding-bottom:32px;">
-              <p style="margin:0;font-size:16px;line-height:1.6;color:#2C2C2C;font-weight:300;">
-                Welcome to KARTA — indoor Zwift routes and outdoor adventures, built for riders who want to spend less time choosing and more time riding.
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td align="center">
-              <a href="${appUrl}/dashboard" style="display:inline-block;background-color:#C4622D;color:#FAFAF7;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:500;">
-                Go to your dashboard
-              </a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-    `.trim(),
+    subject: "You're in — let's find your route",
+    html: buildKartaEmailHtml({
+      appUrl,
+      preheader: "Your KARTA account is ready. Find your next Zwift route or outdoor loop in seconds.",
+      chip: "Welcome aboard",
+      headline: "Your account is ready.",
+      intro:
+        "Welcome to KARTA — indoor Zwift routes and outdoor adventures, built for riders who want intentional rides without the endless scrolling.",
+      features: DEFAULT_EMAIL_FEATURES,
+      cta: {
+        label: "Go to your dashboard",
+        href: "/dashboard",
+      },
+    }),
+  });
+
+  return "sent";
+}
+
+export async function sendAccountDeletedEmail(
+  email: string,
+  appUrlOverride?: string
+): Promise<"sent" | "skipped"> {
+  if (!isResendConfigured()) {
+    console.info(`[KARTA] Resend not configured — deletion email skipped for ${email}`);
+    return "skipped";
+  }
+
+  const resend = getResend();
+  const from = process.env.RESEND_FROM_EMAIL ?? "KARTA <onboarding@resend.dev>";
+  const appUrl = (appUrlOverride ?? getAppUrl()).replace(/\/$/, "");
+
+  await resend.emails.send({
+    from,
+    to: email,
+    subject: "Your KARTA account has been deleted",
+    html: buildKartaEmailHtml({
+      appUrl,
+      preheader: "Your KARTA account and personal data have been permanently removed.",
+      chip: "Account deleted",
+      headline: "Your account has been deleted.",
+      intro:
+        "This confirms that your KARTA account, saved routes, and associated personal data have been permanently removed from our systems as requested.",
+      features: DEFAULT_EMAIL_FEATURES,
+      cta: {
+        label: "Visit KARTA",
+        href: "/",
+      },
+      footerNote: "You're receiving this because you requested account deletion at karta.club.",
+    }),
   });
 
   return "sent";

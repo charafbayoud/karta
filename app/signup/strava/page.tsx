@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { LandingNav } from "@/components/landing/LandingNav";
 import { ConnectStravaButton } from "@/components/dashboard/StravaConnect";
 import { stravaErrorMessage } from "@/lib/strava/errors";
 import { getCurrentProfile } from "@/lib/auth/profile";
@@ -32,8 +32,8 @@ export default async function SignupStravaPage({ searchParams }: SignupStravaPag
   const stravaReady = isStravaConfigured();
 
   return (
-    <>
-      <Navbar />
+    <div className="lp">
+      <LandingNav variant="solid" isAuthenticated />
       <main className="auth-page">
         <div className="auth-card">
           <p className="karta-label">Étape 4 sur 4</p>
@@ -75,6 +75,6 @@ export default async function SignupStravaPage({ searchParams }: SignupStravaPag
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

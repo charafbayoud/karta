@@ -1,5 +1,5 @@
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { LandingNav } from "@/components/landing/LandingNav";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { StravaSetupBanner } from "@/components/auth/StravaSetupBanner";
 import { stravaErrorMessage } from "@/lib/strava/errors";
@@ -25,8 +25,8 @@ export default async function SignupPage({
   const stravaMessage = stravaErrorMessage(params.strava);
 
   return (
-    <>
-      <Navbar />
+    <div className="lp">
+      <LandingNav variant="solid" />
       <main className="auth-page">
         <StravaSetupBanner />
         {stravaMessage && (
@@ -37,6 +37,6 @@ export default async function SignupPage({
         <SignupForm />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LandingFooter } from "./LandingFooter";
 import { LandingNav } from "./LandingNav";
+import { getOptionalUser } from "@/lib/auth/require-user";
 
 type LegalPageShellProps = {
   label: string;
@@ -9,10 +10,12 @@ type LegalPageShellProps = {
   children: React.ReactNode;
 };
 
-export function LegalPageShell({ label, title, updated, children }: LegalPageShellProps) {
+export async function LegalPageShell({ label, title, updated, children }: LegalPageShellProps) {
+  const user = await getOptionalUser();
+
   return (
     <div className="lp">
-      <LandingNav />
+      <LandingNav isAuthenticated={Boolean(user)} variant="solid" />
       <main id="main" className="lp-legal-page">
         <div className="lp-container">
           <nav className="lp-legal-breadcrumb" aria-label="Breadcrumb">
@@ -30,7 +33,7 @@ export function LegalPageShell({ label, title, updated, children }: LegalPageShe
           <article className="lp-legal-content">{children}</article>
         </div>
       </main>
-      <LandingFooter />
+      <LandingFooter isAuthenticated={Boolean(user)} />
     </div>
   );
 }

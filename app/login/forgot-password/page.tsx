@@ -1,5 +1,5 @@
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { LandingNav } from "@/components/landing/LandingNav";
 import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 
 export default async function ForgotPasswordPage({
@@ -11,8 +11,8 @@ export default async function ForgotPasswordPage({
   const expired = params.error === "expired";
 
   return (
-    <>
-      <Navbar />
+    <div className="lp">
+      <LandingNav variant="solid" />
       <main className="auth-page">
         {expired && (
           <p className="auth-error auth-page-error" role="alert">
@@ -22,6 +22,6 @@ export default async function ForgotPasswordPage({
         <ForgotPasswordForm />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

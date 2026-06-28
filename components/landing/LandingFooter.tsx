@@ -139,6 +139,9 @@ export function LandingFooter({ isAuthenticated = false }: LandingFooterProps) {
               <li>
                 <Link href="/my-routes">My Routes</Link>
               </li>
+              <li>
+                <Link href="/settings">Settings</Link>
+              </li>
             </ul>
           </div>
 

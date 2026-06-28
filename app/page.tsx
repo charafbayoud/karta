@@ -36,7 +36,7 @@ export default async function HomePage() {
           }),
         ]}
       />
-      <LandingNav isAuthenticated={isAuthenticated} />
+      <LandingNav isAuthenticated={isAuthenticated} variant="overlay" />
       <main id="main">
         <HeroSection />
         <RoutePreview />

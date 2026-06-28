@@ -34,6 +34,7 @@ yarn-error.log*
 
 # local dev data
 .data/
+/preview/
 
 # typescript
 *.tsbuildinfo
